@@ -50,7 +50,6 @@ Previous versions:
 @end
 
 import: https://raw.githubusercontent.com/liaTemplates/AVR8js/main/README.md
-script: https://unpkg.com/@wokwi/elements@0.22.1/dist/wokwi-elements.bundle.min.js
 
 import: ../assets/macros.md
 -->
@@ -352,3 +351,29 @@ Examples of this include:
 
 
 
+## demo
+
+<div id="isr-demo" style="position: relative; height: 340px;">
+<wokwi-chip-pulse></wokwi-chip-pulse>
+
+  <wokwi-arduino-uno style="position: absolute; top: 130px; left: 0px; transform: rotate(0deg);"></wokwi-arduino-uno>
+
+  <svg width="600" height="520" style="position: absolute; top: 0; left: 0;" fill="none" id="wires" stroke-width="3" stroke-linejoin="round">
+    <path stroke="orange" d="M145,42L145,60L145,140"></path>
+    <path stroke="black" d="M136,42L115,42"></path>
+    <path stroke="orange" d="M236,100L236,140"></path>
+    <path stroke="black" d="M236,84L236,3L115,3L115,140"></path>
+  </svg>
+
+  <wokwi-resistor style="position: absolute; top: 80px; left: 115px; transform: rotate(90deg);" value="220"></wokwi-resistor>
+  <wokwi-pushbutton color="green" 
+                    pin="2"
+                    style="position: absolute; 
+                           top: 70px; 
+                           left: 170px;"></wokwi-pushbutton>
+  <wokwi-led color="green" 
+             pin="11" 
+             style="position: absolute; 
+                    top: 0px; 
+                    left: 120px;"></wokwi-led>
+</div>
