@@ -190,7 +190,7 @@ void loop()
 
 ## Good `isr()` practices
 
-@skip_page
+*Nothing on this page.*
 
 ### Should be fast
 
