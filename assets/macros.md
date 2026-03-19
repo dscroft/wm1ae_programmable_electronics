@@ -56,13 +56,30 @@ link:  styles.css
 script: https://kit.fontawesome.com/83b2343bd4.js
 script:  https://code.jquery.com/jquery-3.6.0.slim.min.js
 
-@skip_page
+@hidecode
 <script>
-// Nothing on this page but we want it for consistent project structure, so auto-advance to next page
-document.getElementById('lia-btn-next').click();
+document.querySelectorAll('.lia-accordion__item').forEach((item) => {
+    const h3 = item.querySelector('h3.lia-accordion__headline');
+    if(h3 && h3.textContent.trim().toLowerCase() === @0) {
+        item.style.display = 'none';
+    }
+});
 </script>
 @end
 
+@headlesscode
+<script>
+document.querySelectorAll('.lia-accordion__item').forEach((item) => {
+    const h3 = item.querySelector('h3.lia-accordion__headline');
+    const label = item.querySelector('label.lia-accordion__header');
+    
+    if(label && h3 && h3.textContent.trim().toLowerCase() === @0) {
+        label.style.display = 'none';
+        return;
+    }
+});
+</script>
+@end
 -->
 
 # Module Macros
