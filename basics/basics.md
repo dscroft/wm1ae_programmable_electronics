@@ -54,33 +54,6 @@ import: https://raw.githubusercontent.com/liaTemplates/AVR8js/main/README.md
 import: ../assets/macros.md
 -->
 
-# Introduction
-
-Arduino is an open-source electronics platform that allows for easy prototyping and development of embedded systems. It provides a simple programming environment and a wide range of libraries and tools that make it accessible to beginners and professionals alike.
-
-There are a range of different Arduino boards available, each with its own set of features, capabilities and form factors. 
-The Arduino ecosystem has also been expanded to a wide range of alternative boards from other manufacturers.
-Some of which are simply clones of official Arduino boards, whilst others are commercially available microcontrollers specifically designed for real world products and now repurposed.
-
-Some popular Arduino boards include the Arduino Uno, Arduino Mega, and Arduino Nano.
-
-
-## Arduino IDE
-
-Although the Arduino organisation does provide an official IDE (Integrated Development Environment) for programming Arduino boards.
-This module will be operating on the assumption that you are using a more general purpose system, specifically Visual Studio Codio.
-VSCode can be used to write and upload code to Arduino boards using the PlatformIO extension.
-
-We will be assuming VSCode and PlatformIO for the following reasons:
-
-- The Arduino IDE is quite basic and lacks many features that are commonly found in more advanced IDEs, such as code completion, programming agent support and unit testing support.
-- The Arduino IDE is not well suited for larger projects, as it does not provide good support for organizing code into multiple files and libraries.
-- The Arduino IDE is not well suited for collaborative development, as it does not provide good support for version control systems such as Git.
-
-
-
-
-
 
 ### Non-blocking code
 
