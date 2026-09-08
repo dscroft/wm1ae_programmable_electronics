@@ -49,6 +49,18 @@ This version (@version): @current_version_description
 
 @end
 
+@recap
+
+In the beginning, we stated some goals.
+
+**Learning Objectives:**
+
+After completion of this module, learners will be able to:
+
+@learning_objectives
+
+@end
+
 icon: https://dscroft.github.io/liascript_materials/assets/logo.svg
 
 link:  styles.css
