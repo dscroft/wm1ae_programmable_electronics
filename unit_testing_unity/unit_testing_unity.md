@@ -1,5 +1,5 @@
 <!--
-module_id: python_unit_testing
+module_id: unit_testing_unity
 author:   David Croft
 email:    david.croft@warwick.ac.uk
 version: 0.0.1
@@ -21,7 +21,7 @@ Learners should be familiar with basic programming concepts and the C/C++ progra
 @learning_objectives  
 - Describe what unit testing is and why it is important in C/C++
 - Identify the main components of a C/C++ unit test
-- Understand how to use the unittest framework to write and run tests
+- Understand how to use the unity framework to write and run tests
 - Understand the steps of the Test Driven Development (TDD) cycle
 
 @end
@@ -169,77 +169,248 @@ Negative test cases are designed to ensure that the code can handle erroneous or
 ****************
 
 
-## How to Write Unit Tests for Python Modules
+## How to Write Unit Tests for C++ Components
 
-Follow these steps to create effective unit tests in Python:
+Follow these steps to create effective unit tests in C++:
 
 ### 1. Choose a Test Framework
 
-- **unittest:** Python’s built-in testing framework. Great for beginners.
-- **pytest:** A popular third-party framework with advanced features and a simple syntax.
+- **Unity:** A lightweight, portable C/C++ testing framework designed specifically for embedded systems and microcontrollers.
+- **Catch2:** A modern, feature-rich C++ testing framework with an expressive syntax and minimal boilerplate. Ideal for most C++ projects.
+- **GoogleTest:** A widely used C++ testing framework with rich assertions, fixtures, parameterized tests, and death tests.
+- **doctest:** A fast, lightweight C++ framework with a simple syntax and minimal compile-time overhead.
+- **CppUTest:** A lightweight C/C++ framework that supports mocks and is well suited to embedded and legacy codebases.
+- **Boost.Test:** A mature C++ framework integrated with the Boost ecosystem, offering assertions, fixtures, and data-driven tests.
+- **CMocka:** A small C framework providing unit testing, mocking, and test isolation for C projects.
+- **Criterion:** A modern C testing framework with automatic test discovery, useful assertions, and informative output.
 
-We are going to use `unittest`.
+----------------------------------
+
+We will be covering  unity in this guide although it is well worth your investigating Catch2 and other frameworks if you plan on pursuing more general purpose C++ development.
+
+Other languages will have their own frameworks and you should investigate the relevant options for the language/s you are using.
 
 ### 2. Organize Your Tests
 
-- Create a new file named `test_{module_name}.py` (e.g., `test_math_utils.py`).
-- Import the test framework and the module you want to test.
+- Create a new file named `test_{module_name}.cpp` (e.g., `test_math_utils.cpp`).
+  - You do not *have* to prefix them with `test_` but it is very much the convention and just general good practise.
+- Include the appropriate test framework header (`"unity.h"` for Unity, but e.g. `<catch2/catch_all.hpp>`).
+- Include the source module you want to test.
 
-### 3. Write Test Classes and Methods
+### 3. Write Test Cases
 
-- Define a class that inherits from `unittest.TestCase`.
-- Write methods that start with `test_` to represent individual test cases.
+**Unity Example:**
 
+This is a minimal example of a unity test program.
+
+Unit tests should consist of a number of assertions grouped into meaningfully named functions. 
+This supplies a degree of structure and readability compared to simply listing hundreds of test assertions without semantic context.
+
+For the full list of assertions, read the [documentation](https://github.com/ThrowTheSwitch/Unity).
 
 ```cpp
 #include "unity.h"
 
+// ignore setUp and tearDown for now, will discuss later
 void setUp(void) {}
 void tearDown(void) {}
 
-void test_bigger(void) {
-    TEST_ASSERT_TRUE( 1 < 0 );
+void test_bigger(void) 
+{
+    TEST_ASSERT_TRUE(2 > 1);
+    TEST_ASSERT_FALSE(1 > 2);
 }
 
-void test_equals(void) {
-    TEST_ASSERT_EQUAL_INT( 2, 1+1 );
+void test_equals(void) 
+{
+    TEST_ASSERT_EQUAL_INT(42, 41+1);
 }
 
-int main(void) {
+int main() 
+{
     UNITY_BEGIN();
+
+    // list all test functions
     RUN_TEST(test_bigger);
     RUN_TEST(test_equals);
+
     return UNITY_END();
 }
 ```
 @LIA.evalWithDebug(`["main.cpp", ["unity_internals.h", "assets/unity_internals.h"],["unity.h", "assets/unity.h"],["unity.c", "assets/unity.c"]]`, `g++ --std=c++17 -Wall unity.c main.cpp`, `./a.out`)
 
 
+<div class = "learn-more">
+<b style="color: rgb(var(--color-highlight));">Fail!</b><br>
+
+Try adjusting the test suite to produce a failing assertion and view the resulting test report.
+</div>
+
+
+#### Testing an existing component
+
+**Unity Example:**
+
+In the previous example we were just testing logical statements (i.e. 2>1), not 
+
+The standard structure is to have the code that we wish to test in one file and the test suite in another. 
+Structuring the code in this way let's allows us to then use the component being tested in our actual project with no changes (e.g. copy/pasting code) once we are satisfied it works.
+
+```cpp math_utils.h
+bool bigger(int a, int b)
+{
+    return a > b;
+}
+```
+```cpp test_math_utils.cpp
+#include "unity.h"
+#include "math_utils.h"
+
+void setUp(void) {}
+void tearDown(void) {}
+
+void test_bigger(void) 
+{
+    TEST_ASSERT_TRUE(bigger(5, 3));
+}
+
+void test_smaller(void) 
+{
+    TEST_ASSERT_FALSE(bigger(3,5));
+}
+
+int main() 
+{
+    UNITY_BEGIN();
+    RUN_TEST(test_bigger);
+    RUN_TEST(test_smaller);
+    return UNITY_END();
+}
+```
+@LIA.evalWithDebug(`["math_utils.h", "test_math_utils.cpp", ["unity_internals.h", "assets/unity_internals.h"],["unity.h", "assets/unity.h"],["unity.c", "assets/unity.c"]]`, `g++ --std=c++17 -Wall unity.c test_math_utils.cpp`, `./a.out`)
+
+
 
 ### 4. Run Your Tests
 
-In this lab you are able to run the code directly in the browser but that will not be the case for your own projects.
+For your own projects, compile the Unity source file together with the test script and the source code under test. For example, for the C++ test script `test_math_utils.cpp`, run:
 
-How exactly you run your tests will depend on the contents of your test file, specifically if you included the test runner with the line `unittest.main()`.
+```bash
+g++ -std=c++17 -Wall unity.c test_math_utils.cpp -o test_math_utils
+```
 
-- If you have included the test runner, you can run the test file directly, e.g. `python3 testfile.py`.
-- Alternative you can call the runner yourself, i.e. `python3 -m unittest testfile.py`.
-  - This also works even if you have included `unittest.main()` line and superceeds it.
+Then run the compiled test executable:
+
+```bash
+./test_math_utils
+```
+
+For a C test script, use `gcc` instead:
+
+```bash
+gcc -std=c11 -Wall unity.c test_math_utils.c -o test_math_utils
+./test_math_utils
+```
+
+The test script should contain `main`, call `UNITY_BEGIN()`, run each test with `RUN_TEST(...)`, and return `UNITY_END()`. Recompile whenever the test script or code under test changes.
+
+Make sure to make include any necessary header files.
 
 -----------------------------
 
-Using the test runner approach is often preferrable as it allows you to have more control over how the tests are run. 
+If your project contains several Unity test scripts, compile each script into a separate executable, or include the test source files in one compilation command. A successful run reports the tests that passed; failed assertions identify the test and source line.
 
-For example:
+## Unity in PlatformIO
 
-| Command | Description |
-|---------|--------------|
-| `python3 -m unittest testfile.py` | Run all tests in the specified file |
-| `python3 -m unittest discover` | Run all tests in the current directory |
-| `python3 -m unittest discover -k pattern` | Run all tests in whose names match the pattern |
-| `python3 -m unittest discover --verbose` | Run all tests with detailed output |
+As previously stated, unity is particularly suited to testing of embedded projects. 
+This is due to its lightweight nature, so lightweight in fact that it can be compiled for and run on the embedded device itself.
+This can be of particular use when attempting to test interaction with embedded hardware specific functionality or interaction with external circuitry.
 
-So if, for example, you had multiple test files covering all the different modules in your project, you could run all the tests with a single command.
+Doing this within PlatformIO does require some specific steps.
+
+### 1. Specify your unit testing framework
+
+Add a `test_framework` entry to your project configuration (platformio.ini) file.
+
+```
+[env]
+framework = arduino
+test_framework = unity
+```
+
+### 2. Create folder structure
+
+Add a `test/` directory to your project root.
+Add individual `test_` directories within that and `.ccp` files within those.
+
+**For example**
+
+```txt
+project/
+├── platformio.ini
+├── include/
+│   └── math_utils.h
+├── src/
+│   └── main.cpp
+└── test/
+    └── test_math_utils
+        └── test_math_utils.cpp
+```
+
+### 3. Adjust the test runner
+
+We do need to make slight changes to our test runner code.
+As our intention is to run this onboard the arduino, it needs to be structured as an Arduino program. 
+This means `setup()` and `loop()` functions.
+
+We put the `UNITY_BEGIN` and `UNITY_END` functions within setup instead of loop as we only intend to run the tests once.
+
+```cpp
+#include <Arduino.h>
+#include <unity.h>
+#include "math_utils.h"
+
+void test_bigger(void) 
+{
+    TEST_ASSERT_TRUE(bigger(5, 3));
+}
+
+void test_smaller(void) 
+{
+    TEST_ASSERT_FALSE(bigger(3,5));
+}
+
+void setup() 
+{
+    delay(2000); // wait to let serial stablise
+
+    UNITY_BEGIN();
+    RUN_TEST(test_bigger);
+    RUN_TEST(test_smaller);
+    UNITY_END();
+}
+
+void loop() {}
+```
+
+### 4. Run the tests
+
+Run the tests, assuming you are using PlatformIO within VScode there is a "Test" button within the "Advanced" menu of the "PlatformIO" bar on the left.
+There is also a PlatformIO "Test" button at the bottom of the window in the shape of a beaker.
+
+![](media/test_button.png "Run tests button")
+
+----------------------------------------------
+
+Or, even better, PlatformIO should automatically integrate into the VSCode test explorer window on the left hand side.
+This provides substantially more control and tracking of individual test results.
+
+![](media/test_side_button.png "Test explorer")
+
+----------------------------------------------
+
+If you have multiple directories and test suites within the `test/` subdirectory, then each test suite will be compiled, uploaded to the Arduino and run separately.
+You will then get a results summary showing the performance across all tests.
 
 
 ### Multiple Choice Question
@@ -258,6 +429,16 @@ Assertions are used to verify that the actual outcome of a function matches the 
 
 </div>
 ****************
+
+### Task 
+
+<div class = "learn-more">
+<b style="color: rgb(var(--color-highlight));"></b><br>
+
+Create a new PlatformIO project containing a function that returns the supplied argument doubled.
+
+- Write the appropriate test suite and confirm that it runs successfully on your Arduino.
+</div>
 
 
 ## Summary
@@ -311,101 +492,104 @@ Write a failing tests that defines the desired functionality.
 
 In this case we want to count the number of vowels in a string.
 
-@unittest_fix
+```cpp test_myvowels.cpp
+#include <Arduino.h>
+#include <unity.h>
+#include "myvowels.h"
 
-```python
-# test_myvowels.py
-import unittest
+void test_consonants(void) 
+{
+    TEST_ASSERT_EQUAL(count_vowels("rythmn"), 0);
+}
 
-class TestCountVowels(unittest.TestCase):
-    def test_consonants(self):
-        self.assertEqual(count_vowels("rhythm"), 0)
+void test_all_vowels(void) 
+{
+    TEST_ASSERT_EQUAL(count_vowels("aeiou"), 5);
+}
 
-    def test_all_vowels(self):
-        self.assertEqual(count_vowels("aeiou"), 5)
+void setup() 
+{
+    delay(2000);
 
-if __name__ == "__main__":
-    unittest.main()
+    UNITY_BEGIN();
+    RUN_TEST(test_consonants);
+    RUN_TEST(test_all_vowels);
+    UNITY_END();
+}
+
+void loop() {}
 ```
-@Pyodide.eval
 
 At this point, running the tests will fail because `count_vowels` does not exist yet.
 But make sure to run the tests to confirm they fail as expected.
-
-<div class = "warning">
-<b style="color: rgb(var(--color-highlight));">Warning</b><br>
-
-If you complete the later steps and then return to this page, the tests might pass because the function will have been implemented. To start fresh and see the tests fail as intended, click the button below to reset the environment.
-
-```python
-# Remove count_vowels if it exists in the current environment
-if 'count_vowels' in globals():
-    del count_vowels
-```
-@Pyodide.hide
-
-</div>
-
 
 
 ### 2. Green Phase
 
 Write the minimum code to pass the tests.
 
-```python
-# myvowels.py
-def count_vowels(string):
-    vowels = "aeiou"
+```cpp myvowels.h
+#include <Arduino.h>
 
-    count = 0
-    for char in string:
-        if char in vowels:
-            count += 1
-    return count
+int count_vowels(String value)
+{
+    int count = 0;
+    for( char c : value )
+    {
+        if( value == 'a' || value == 'e' || value == 'i' || value == 'o' || value == 'u' ) 
+            count += 1;
+    }    
+    return count;
+}
 ```
-@Pyodide.eval
 
 **Run the tests again**
-
-```python
-if "TestCountVowels" not in globals():
-    print("Unit tests not defined, please run the Red phase first.")
-else:
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestCountVowels)
-    unittest.TextTestRunner(verbosity=2).run(suite)
-```
-@Pyodide.hide
 
 Now, running the tests should pass.
 If the tests do not pass, adjust the implementation until they do.
 
-Importantly, the tests define the requirements for the function. 
+<div class = "important">
+<b style="color: rgb(var(--color-highlight));">Assumptions make an ass</b><br>
+
+Importantly, the tests help define the requirements for the function. 
 So definitive decisions about how the function should behave are made before the implementation is written, i.e. does 'y' count as a vowel?
+</div>
+
 
 
 ### 3. Refactor
 
 Review your code for improvements. 
-In this simple case, the function is quite straightforward but there are more concise ways available.
+In this simple case, the function is quite straightforward but there are alternative ways to write it.
+This approach for example might be clearer.
 
-```python
-# myvowels.py
-def count_vowels(string):
-    vowels = "aeiou"
-    return len([char for char in string if char in vowels])
+```cpp myvowels.h
+#include <Arduino.h>
+
+int count_vowels(String value)
+{
+    int count = 0;
+    for( auto c : value )
+    {
+        switch( c )
+        {
+            case 'a': [[fallthrough]]
+            case 'e': [[fallthrough]]
+            case 'i': [[fallthrough]]
+            case 'o': [[fallthrough]]
+            case 'u': 
+                ++count;
+                break;
+            default:
+                break;
+        }
+    }
+
+    return count;
+}
 ```
-@Pyodide.eval
 
 **Run the tests again**
-
-```python
-if "TestCountVowels" not in globals():
-    print("Unit tests not defined, please run the Red phase first.")
-else:
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestCountVowels)
-    unittest.TextTestRunner(verbosity=2).run(suite)
-```
-@Pyodide.hide
 
 
 ### 4. Red Phase (again)
@@ -413,45 +597,61 @@ else:
 We want to expand the functionality of our function so that it can handle uppercase letters as well.
 So we write more failing tests covering this new functionality.
 
-```python
-# test_myvowels.py
-import unittest
+```cpp test_myvowels.cpp
+#include <Arduino.h>
+#include <unity.h>
+#include "myvowels.h"
 
-class TestCountVowels(unittest.TestCase):
-    def test_consonants(self):
-        self.assertEqual(count_vowels("rhythm"), 0)
+void test_consonants(void) 
+{
+    TEST_ASSERT_EQUAL(count_vowels("rythmn"), 0);
+}
 
-    def test_all_vowels(self):
-        self.assertEqual(count_vowels("aeiou"), 5)
+void test_all_vowels(void) 
+{
+    TEST_ASSERT_EQUAL(count_vowels("aeiou"), 5);
+}
 
-    def test_uppercase_consonants(self):
-        self.assertEqual(count_vowels("RHYTHM"), 0)
+void test_uppercase_consonants(void)
+{
+    TEST_ASSERT_EQUAL(count_vowels("RHYTHM"), 0);
+}
     
-    def test_uppercase_vowels(self):
-        self.assertEqual(count_vowels("AEIOU"), 5)
+void test_uppercase_vowels(void)
+{
+    TEST_ASSERT_EQUAL(count_vowels("AEIOU"), 5);
+}
 
-    def test_mixed_case(self):
-        self.assertEqual(count_vowels("An example sentence"), 7)
+void test_mixed_case(void)
+{
+    TEST_ASSERT_EQUAL(count_vowels("An example sentence"), 7);
+}
+
+void setup() 
+{
+    delay(2000);
+
+    UNITY_BEGIN();
+    RUN_TEST(test_consonants);
+    RUN_TEST(test_all_vowels);
+    RUN_TEST(test_uppercase_consonants);
+    RUN_TEST(test_uppercase_vowels);
+    RUN_TEST(test_mixed_case);
+    UNITY_END();
+}
+
+void loop() {}
 ```
-@Pyodide.eval
 
 **Make sure to run the tests to confirm they fail as expected.**
 
-```python
-if "TestCountVowels" not in globals():
-    print("Unit tests not defined, please run the Red phase first.")
-else:
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestCountVowels)
-    unittest.TextTestRunner(verbosity=2).run(suite)
-```
-@Pyodide.hide
 
 <div class = "important">
 <b style="color: rgb(var(--color-highlight));">Important note</b><br>
 
 It is important that your tests should fail in the Red phase.
 
-Failing tests demonstrate that the tests *can* fail. As such when they pass, it is evidence that the code is working as intended.
+Failing tests demonstrate that the tests *can* fail. As such, when they pass, it is evidence that the code is working as intended.
 If the tests pass by default, are they actually testing your code or do they just pass no matter what?
 
 </div>
@@ -461,12 +661,31 @@ If the tests pass by default, are they actually testing your code or do they jus
 
 Write the minimum code to pass the new tests.
 
-```python
-def count_vowels(string):
-    vowels = "aeiouAEIOU"
-    return len([char for char in string if char in vowels])
+```cpp myvowels.h
+#include <Arduino.h>
+
+int count_vowels(String value)
+{
+    int count = 0;
+    for( auto c : value )
+    {
+        switch( tolower(c) ) // notice the tolower function on this line
+        {
+            case 'a': [[fallthrough]]
+            case 'e': [[fallthrough]]
+            case 'i': [[fallthrough]]
+            case 'o': [[fallthrough]]
+            case 'u': 
+                ++count;
+                break;
+            default:
+                break;
+        }
+    }
+
+    return count;
+}
 ```
-@Pyodide.eval
 
 **Check that the tests pass**
 
@@ -477,22 +696,21 @@ If the tests do not pass, adjust the implementation until they do.
 
 ### 6. Refactor (again)
 
-Our previous implementation was quite concise already but we can make it even more efficient by using a generator expression with `sum`.
+Our previous implementation was quite clear already but rather verbose we can make it substantially more compact and still clear if we use the `.indexOf` method combined with a list of the characters we are interested in.
 
-```python
-def count_vowels(string):
-    vowels = set("aeiouAEIOU")
-    return sum(1 for char in string if char in vowels)
+```cpp myvowels.h
+int count_vowels(String value)
+{
+    const String vowels = "aeiou";
+    int count = 0;
+    for( char c : value )
+        if( vowels.indexOf(c) != -1 )
+            ++count;
+    return count;
+}
 ```
-@Pyodide.eval
 
 **Make sure to run the tests again to confirm they still pass.**
-
-```python
-unittest.main()
-""
-```
-@Pyodide.hide
 
 ------------------------
 
