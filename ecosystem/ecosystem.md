@@ -82,16 +82,25 @@ Visual Studio Code (vscode) is a free, open-source code editor developed by Micr
 It is widely used for various programming languages and offers a rich ecosystem of extensions that enhance its functionality. 
 VS Code provides the standard features such as syntax highlighting, code completion, debugging tools, and integrated terminal support, making it an excellent choice for software systems development.
 
-
 <div class="important">
 <b style="color: rgb(var(--color-highlight));">Important note</b><br>
 
 Vscode is open sourced under the MIT License and is available for Windows, macOS, and Linux.
 However the default pre-compiled binaries of vscode include telemetry and other Microsoft services.
 If you prefer to use a version of vscode without telemetry, you can use the open-source version called [VSCodium](https://vscodium.com/).
-If you encounter anywhere that the instructions do not work with VSCodium please let the module leader know.
+If you encounter anywhere that the instructions do not work with VSCodium please let the module leader know as materials have only been tested in VSCode.
 
 </div>
+
+
+### Installation
+
+1. Visit the Visual Studio Code website and download the appropriate version for your platform.
+    - [Download](https://code.visualstudio.com/Download).
+2. Make sure that VSCode runs.
+
+![VSCode starting screen with dark theme](media/VS_Code.png "VSCode starting screen with dark theme")
+
 
 
 ## PlatformIO
@@ -101,7 +110,8 @@ PlatformIO provides a powerful and user-friendly environment for embedded system
 It is separate and distinct from VSCode, but it can also integrate with it as an extension.
 
 
-## Justification
+Justification
+=================
 
 We will be using PlatformIO within VSCode as our development environment for this module over the official Arduino IDE for several reasons:
 
@@ -112,6 +122,46 @@ We will be using PlatformIO within VSCode as our development environment for thi
 
 While the official Arduino IDE is simpler and may be more approachable for beginners, it lacks many of the features needed to support professional software development practices that will be introduced in this module.
 
+### Installation
+
+Option 1 - Install from within VSCode.
+=====================
+
+1. Within your VSCode installation, open the Extensions view.
+    - Ctrl+Shift+X
+2. Search for Platformio IDE.
+3. Install.
+
+![](media/platformio.png "Installation steps")
+
+Option 2 - Install from VSCode Marketplace
+====================
+
+1. Visit the Marketplace [website](https://marketplace.visualstudio.com/) (appstore).
+2. Find [PlatformIO](https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide).
+3. Follow instructions.
+
+### Testing
+
+The PlatformIO extension will not complete setup until you run it for the first time.
+Follow these steps to check it is installed and working.
+
+1. Open VSCode.
+2. Open PlaformIO Extension.
+    - The Alien/Ant head on the left-hand sidebar.
+3. In the PIO Home, open "Project Examples".
+4. Select arduino-blink under the "Renesas RA" category.
+    - *Not* the one under the "ATmel AVR" or any other category.
+    - It's probably near the bottom of the list.
+5. Import.
+    - Let it finish downloading and installing.
+6. Click the "PlatformIO: Build" button on the bottom bar.
+    - Looks like a tick.
+
+If you made it through all these steps and everything was successful, you should see several "SUCCESS" messages in the terminal window.
+
+![](media/build.png "Successful installation and build")
+
 
 # Version Control
 
@@ -119,14 +169,24 @@ Version control is a system that records changes to files over time so that you 
 It is an essential tool for software development, allowing developers to track changes, collaborate with others,
 
 The specifics of version control will be covered later in module, but we will be using Git on this module.
-You will be required to upload your coursework to an online Git repository. 
 
-Online repository hosting
+- You will be required to upload your coursework to an online Git repository. 
+- You are not required to use any specific repository hosting service.
+
+mygit.wmg.warwick.ac.uk
 =========================
 
-You are not required to use any specific repository hosting service.
-
 WMG has an [institutional instance](https://mygit.wmg.warwick.ac.uk/) that you can use for this purpose, but you are free to use any online hosting service such as GitHub or GitLab if you prefer.
+
+- You will need to reach out to your module leader for them to create your Warwick git account.
+
+github.com
+==========
+
+Github is the more commonly used hosting service however and if you would prefer to use that then you can.
+
+- Using Github does have the benefit that you will not loose access when your course finishes and can start to develop a portfolio of work.
+
 
 <div class = "cool-fact">
 <b style="color: rgb(var(--color-highlight));">Free!</b><br>
@@ -147,13 +207,21 @@ This module will not be supplying licenses for specific agents.
 If you choose to use an agent, then there is almost certainly an extension to integrate them with your VSCode environment.
 For example if you have signed up for a Github education account and have access to Copilot, then you can install the [Copilot extension](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot).
 
-Alternatively you can run your own local agents using Ollama and integrate with VSCode using CLine, Ollama Autocoder or alternatives.
+Alternatively you can run your own local agents using Ollama and integrate with VSCode .
 
 
 # Checklist
 
+If using your own computer
+============================
+
 1. Install Visual Studio Code.
 2. Install the PlatformIO extension in Visual Studio Code.
-3. Create account on an online Git repository hosting service (e.g. WMG's MyGit, GitHub or GitLab).
-4. Collect your Arduino Uno R4 Wifi and accessories.
+3. Check that the software works.
+
+Everyone
+========
+
+1. Create account on an online Git repository hosting service (e.g. WMG's MyGit, GitHub or GitLab).
+2. Collect your Arduino Uno R4 Wifi and accessories.
    
