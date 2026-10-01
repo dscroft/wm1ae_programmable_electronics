@@ -125,6 +125,7 @@
 .lia-header__middle {
   background: url(https://dscroft.github.io/wm9QF_programming_for_artificial_intelligence_labs/assets/media/wmg-logo.svg);
   background-repeat: no-repeat;
+  background-size: contain;
 }
 
 .lia-quote{
