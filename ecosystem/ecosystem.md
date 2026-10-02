@@ -129,7 +129,7 @@ Option 1 - Install from within VSCode.
 
 1. Within your VSCode installation, open the Extensions view.
     - Ctrl+Shift+X
-2. Search for Platformio IDE.
+2. Search for "PlatformIO IDE".
 3. Install.
 
 ![](media/platformio.png "Installation steps")
@@ -140,6 +140,7 @@ Option 2 - Install from VSCode Marketplace
 1. Visit the Marketplace [website](https://marketplace.visualstudio.com/) (appstore).
 2. Find [PlatformIO](https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide).
 3. Follow instructions.
+
 
 ### Testing
 
@@ -160,7 +161,57 @@ Follow these steps to check it is installed and working.
 
 If you made it through all these steps and everything was successful, you should see several "SUCCESS" messages in the terminal window.
 
-![](media/build.png "Successful installation and build")
+![](media/build.png "Successful installation and build with PlatformIO")
+
+
+
+## General C/C++ compiler
+
+Although not the specific focus of the module we will be looking at how general purpose C/C++ development differs from embedded development.
+For this reason it may be helpful for you to have a general purpose C/C++ compiler installed as well.
+
+The best way to do this will vary depending on your OS and you can look that up for your specific system. 
+But for the purposes of this module specifically we are going to recommend installing the "C C++ Toolkit" extension in order to keep consistency across student and university machines.
+This extension will install the GCC (GNU C Compiler) alongside various additional development tools.
+
+### Installation
+
+Option 1 - Install from within VSCode.
+=====================
+
+1. Within your VSCode installation, open the Extensions view.
+    - Ctrl+Shift+X
+2. Search for "C C++ Toolkit".
+    - Published by "Usman Mehmood" at cpptoolkit.com.
+3. Install.
+
+Option 2 - Install from VSCode Marketplace
+====================
+
+1. Visit the Marketplace [website](https://marketplace.visualstudio.com/) (appstore).
+2. Find [C C++ Toolkit](https://marketplace.visualstudio.com/items?itemName=UsmanMehmood.c-toolkit).
+3. Follow instructions.
+
+
+### Testing
+
+The Toolkit extension will not complete setup until you run it for the first time.
+Follow these steps to check it is installed and working.
+
+1. Open VSCode.
+2. Create a new C++ project.
+    - Open the Command Palette (ctrl+shift+p).
+    - Search for "C C++ Toolkit: Create New C++ Project".
+3. Follow the instructions to complete installation, select a base folder and name your project.
+4. Once the project has been created, build it.
+    - Open the Command Palette (ctrl+shift+p).
+    - Search for "CMake: Build".
+    - *Or*, click on the "Build" button in the bottom left corner of VSCode.
+
+
+If you made it through all these steps and everything was successful, a "[build] Build finished with exit code 0" message in the Output window
+
+![](media/cmake.png "Successful installation and build with CMake")
 
 
 # Version Control
