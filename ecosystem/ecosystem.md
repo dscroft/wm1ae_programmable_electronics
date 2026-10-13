@@ -45,6 +45,7 @@ Previous versions:
 
 @end
 
+import: https://raw.githubusercontent.com/dscroft/CodeRunner/master/README.md
 import: https://raw.githubusercontent.com/liaTemplates/AVR8js/main/README.md
 
 import: ../assets/macros.md
@@ -101,6 +102,26 @@ If you encounter anywhere that the instructions do not work with VSCodium please
 
 ![VSCode starting screen with dark theme](media/VS_Code.png "VSCode starting screen with dark theme")
 
+----------------------------------
+
+Portable version
+================
+
+If you cannot install the software then it is possible to run Visual Studio Code as a [portable app](https://code.visualstudio.com/docs/setup/portable).
+VScode is available via the software center on WMG machines, but installing extensions and configuring your preferences on new machines is generally time consuming.
+
+This approach allows you to carry your installation on a USB stick, with extensions you are looking at about 2GB minimum.
+
+1. Visit the Visual Studio Code website and download the version for your platform.
+    - If on Windows you will need the correct .zip file (probably the x64 version).
+    - If on Linux you will need the correct .tar.gz file (probably the x64 version).
+    - I don't have a Mac and so am not clear on which file you need. If you figure it out send me a merge request with missing details.
+    - [Download](https://code.visualstudio.com/Download).
+2. Extract the contents to your desired location.
+3. Open the directory you just extracted to and find the "Code" executable file.
+4. Create a directory called "data" in the same location as the "Code" executable.
+5. Run the "Code" executable.
+  - Use as normal.
 
 
 ## PlatformIO
@@ -261,6 +282,150 @@ For example if you have signed up for a Github education account and have access
 Alternatively you can run your own local agents using Ollama and integrate with VSCode .
 
 
+# LiaScript
+
+The lab materials for the course are written in LiaScript, i.e. this is written in LiaScript.
+If you want to look into Markdown based presentation systems then feel free but it's not directly relevant to this module with the possible exception of writing the documentation for your Git repositories.
+
+-----------------------------
+
+LiaScript has a number of useful capabilities.
+
+- Navigation between pages can be done using the keyboard keys or the arrow buttons at the base of the page.
+  - If you are on mobile you may need to scroll down to see them (e.g. Firefox mobile).
+- Search and navigation is available via the Table of contents <i class="icon icon-table lia-btn__icon"></i>
+- Alternative colour schemes, including dark mode as available via Settings <i class="icon icon-settings lia-btn__icon"></i>
+- Translations are available via the Translations button but absolutely **no** claims of accuracy are made.
+
+## Tasks
+
+As you work through the materials you will encounter tasks to be completed.
+These tasks will be generally be tagged using the same traffic light system as the Lecture slides.
+
+<div class="pass-task">
+@boxheader(Core task)
+
+This is a core task, you *really* want to be able to do all of these.
+</div>
+
+<div class="good-task">
+@boxheader(Intermediate task)
+
+This is an intermediate task, if you want a good mark you'll be able to do all of these.
+</div>
+
+<div class="adv-task">
+@boxheader(Advanced task)
+
+This is an advanced task, you do not need to be able to do this in order to pass the module.
+That said, understanding of these topics may be helpful in later modules.
+</div>
+
+## Code examples
+
+Some of the materials will include active and/or passive code examples.
+
+
+Passive Example
+===============
+<section class="flex-container">
+<div class="flex-child" style="min-width:500px">
+```cpp
+int main()
+{
+  std::cout << "Hello World!" << std::endl;
+  return 0;
+}
+```
+</div>
+<div class="flex-child">
+- Can copied to the clipboard using the <i class="icon icon-copy lia-btn__icon"></i> button.
+</div>
+</section>
+
+
+Active Example
+===============
+<section class="flex-container">
+<div class="flex-child" style="min-width:500px">
+```cpp
+int main()
+{
+  std::cout << "Hello World!" << std::endl;
+  return 0;
+}
+```
+@LIA.cpp()
+</div>
+<div class="flex-child">
+- Can be generally be edited by you.
+- Can be run in the browser.
+  - Press the <i class="icon icon-compile-circle lia-btn__icon"></i> button
+- If you edit the code you can view the different versions using the <i class="icon icon-chevron-left lia-btn__icon"></i> <i class="icon icon-chevron-right lia-btn__icon"></i> arrows 
+</div>
+</section>
+
+<section class="flex-container">
+<div class="flex-child pass-task">
+@boxheader(In the browser)
+
+Run the active task demo and see what happens.
+</div>
+<div class="flex-child good-task">
+@boxheader(In the browser)
+
+Break the code and try running it, what happens?
+
+If not sure how to break it, just try deleting some random bits.
+</div>
+</section>
+
+
+## Arduino code examples
+
+The previous examples were for general C/C++. 
+They were compiled for a x64 Ubuntu system not an embedded device.
+You will encounter some active examples for Arduino code, these will however be rarer as we are limited in our ability to simulate hardware interactions.
+
+Arduino examples will generally be obvious as they include `void setup()` and `void loop()` functions, the purpose of which will be covered later.
+
+<div id="simple-demo">
+  <wokwi-led color="red" pin="11"></wokwi-led>
+</div>
+```cpp Simple Arduino example
+constexpr uint8_t ledPin = 11;
+
+void setup() 
+{
+  Serial.begin(9600);
+  pinMode(ledPin, OUTPUT);
+}
+
+void loop() 
+{
+  static bool state = HIGH;                // store state
+
+  digitalWrite( ledPin, state );           // set led
+  Serial.println( state ? "ON" : "OFF" );  // print message
+
+  state = !state;                          // flip state
+
+  delay(3000);                             // wait 3s
+}
+```
+@AVR8js.sketch(simple-demo)
+
+<div class="pass-task">
+@boxheader(In the browser)
+
+Try running the Arduino example, what happens?
+
+*Hint: watch the LED* 
+
+<wokwi-led color="red" pin="11"></wokwi-led>
+
+</div>
+
 # Checklist
 
 If using your own computer
@@ -268,7 +433,8 @@ If using your own computer
 
 1. Install Visual Studio Code.
 2. Install the PlatformIO extension in Visual Studio Code.
-3. Check that the software works.
+3. Install the C C++ Toolkit extension in Visual Studio Code.
+4. Check that the software works.
 
 Everyone
 ========
