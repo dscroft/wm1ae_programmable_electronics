@@ -75,6 +75,7 @@ document.querySelectorAll('.lia-accordion__item').forEach((item) => {
     if(h3 && h3.textContent.trim().toLowerCase() === @0) {
         item.style.display = 'none';
     }
+    console.log(h3);
 });
 </script>
 @end
@@ -92,6 +93,8 @@ document.querySelectorAll('.lia-accordion__item').forEach((item) => {
 });
 </script>
 @end
+
+@boxheader: <b style="color: rgb(var(--color-highlight));">@0</b><br>
 -->
 
 # Module Macros
