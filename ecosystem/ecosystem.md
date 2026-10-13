@@ -71,11 +71,17 @@ So transitioning to a more industry relevant microcontroller is supported down t
 R4 Wifi
 =======
 
+<section class="flex-container">
+<div class="flex-child">
 This this module we will be primarily using the Arduino Uno R4 Wifi, which is the latest addition to the Arduino family and features a more powerful microcontroller and built-in Wi-Fi capabilities.
 However alternative boards are available if needed.
 
 The primary reason for choosing the R4 Wifi is its built in debugging capabilities. Although the built in wifi is a benefit.
-
+</div>
+<div class="flex-child">
+![Arduino Uno R4 WiFi](https://upload.wikimedia.org/wikipedia/commons/9/90/Arduino_Uno_R4_WiFi.webp "Arduino Uno R4 WiFi<br>Arduino, [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0), via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Arduino_Uno_R4_WiFi.webp)")
+</div>
+</section>
 
 ## Visual Studio Code
 
@@ -245,6 +251,10 @@ The specifics of version control will be covered later in module, but we will be
 - You will be required to upload your coursework to an online Git repository. 
 - You are not required to use any specific repository hosting service.
 
+## Recommended hosting platforms
+
+You are not limited to these but if you intend to use a provider besides there, especially for coursework, you should confirm that the module staff will be able to access your submission.
+
 mygit.wmg.warwick.ac.uk
 =========================
 
@@ -297,7 +307,7 @@ LiaScript has a number of useful capabilities.
 - Alternative colour schemes, including dark mode as available via Settings <i class="icon icon-settings lia-btn__icon"></i>
 - Translations are available via the Translations button but absolutely **no** claims of accuracy are made.
 
-## Tasks
+## Lab tasks
 
 As you work through the materials you will encounter tasks to be completed.
 These tasks will be generally be tagged using the same traffic light system as the Lecture slides.
@@ -318,13 +328,13 @@ This is an intermediate task, if you want a good mark you'll be able to do all o
 @boxheader(Advanced task)
 
 This is an advanced task, you do not need to be able to do this in order to pass the module.
-That said, understanding of these topics may be helpful in later modules.
+That said, understanding of these topics may be helpful in later modules or just generally.
 </div>
+
 
 ## Code examples
 
 Some of the materials will include active and/or passive code examples.
-
 
 Passive Example
 ===============
@@ -392,7 +402,7 @@ Arduino examples will generally be obvious as they include `void setup()` and `v
 <div id="simple-demo">
   <wokwi-led color="red" pin="11"></wokwi-led>
 </div>
-```cpp Simple Arduino example
+```cpp
 constexpr uint8_t ledPin = 11;
 
 void setup() 
