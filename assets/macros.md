@@ -94,7 +94,20 @@ document.querySelectorAll('.lia-accordion__item').forEach((item) => {
 </script>
 @end
 
+@nocontent: *No content on this page.*
+
 @boxheader: <b style="color: rgb(var(--color-highlight));">@0</b><br>
+
+@addcppmain
+```cpp -main.cpp
+#include <iostream>
+int main() { 
+  #include "visible.h"
+}
+```
+@LIA.eval(`["visible.h", "main.cpp"]`, `g++ main.cpp`, `./a.out`)
+@hidecode("main.cpp")
+@end
 -->
 
 # Module Macros

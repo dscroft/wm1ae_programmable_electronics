@@ -12,10 +12,10 @@ mode: Textbook
 title: Unity unit testing
 comment:  This module introduces the the concepts of unit testing in C/C++, and how to use the unity framework to create and run tests.
 long_description: This module introduces the the concepts of unit testing in C/C++, and how to use the unity framework to create and run tests.
-estimated_time_in_minutes: 40
+estimated_time_in_minutes: 60
 
 @pre_reqs
-Learners should be familiar with basic programming concepts and the C/C++ programming language, including importing modules and using functions. 
+Learners should be familiar with basic programming concepts and the C/C++ programming language, including header files and using functions. 
 @end
 
 @learning_objectives  
@@ -93,7 +93,7 @@ Test cases typically include:
 - **Assertions:** Statements that compare the actual outcome to the expected one.
 
 
-### Why Write Test Cases?
+## Why Write Test Cases?
 
 Writing test cases helps you:
 
@@ -108,6 +108,113 @@ Writing test cases helps you:
 - Ensure compliance with industry standards and regulations that may require thorough testing.
 - Provide a safety net for experimenting with new features or optimizations.
 
+!?["Explanation of the Ariane 5 explosion"](https://www.youtube.com/watch?v=5tJPXYA0Nec "Integration testing failure")
+
+
+### Documentation example
+
+Documenting the expected behaviour is an underrated benefit. 
+Unit tests can form an explicit record of the correct, or at least the historically expected behaviour of a system.
+
+Not all bugs are fixed, especially where fixing the issue is likely to cause significant disruption.
+
+<div class="learn-more">
+@boxheader(May you live in interesting times)
+
+Bugs that would cause too much trouble if they were fixed are [compatibility bugs](https://en.wikipedia.org/wiki/Bug_compatibility).
+Once you decide that this is the desired behaviour, it becomes the correct behaviour and your tests need to check that the bug still exists.
+
+</div>
+
+-----------------------------------------
+
+<div class="good-task">
+@boxheader(In the browser)
+
+The code below is incomplete. I am not going to tell you want the requirements are, but I have supplied a series of tests for you.
+
+1. Complete the code so that it passes all of the tests.
+    - This will probably take multiple rounds of iterative code improvements.
+2. Describe the desired behaviour of the function.
+</div>
+
+```cpp
+#include <string>
+
+std::string age_description( int age )
+{
+    return "adult";
+}
+```
+```cpp -main.cpp
+#include "visible.h"
+#include "unity.h"
+#include <string>
+
+// ignore setUp and tearDown for now, will discuss later
+void setUp(void) {}
+void tearDown(void) {}
+
+void test( int min, int max, const std::string answer )
+{
+    for( int age=min; age<=max; ++age )
+    {
+        TEST_ASSERT_EQUAL_STRING_MESSAGE( answer.c_str(), age_description( age ).c_str(),  
+            ("Testing for age "+std::to_string(age)).c_str() );
+    }
+}
+
+void test_babies(void) { test( 0, 4, "baby" ); }
+void test_children(void) { test( 5, 12, "child"); }
+void test_teenagers(void) { test( 13, 19, "teenager" ); }
+void test_adults(void) { test( 20, 64, "adult" ); }
+void test_oaps(void) { test( 65, 122, "oap" ); }
+void test_liars(void) 
+{
+    test( -10, -1, "liar" );
+    test( 123, 140, "liar" );
+    test( -1234567, -1234567, "liar" );
+    test( 654321, 654321, "liar" );
+}
+
+int main() 
+{
+    UNITY_BEGIN();
+
+    // list all test functions
+    RUN_TEST(test_babies);
+    RUN_TEST(test_children);
+    RUN_TEST(test_teenagers);
+    RUN_TEST(test_adults);
+    RUN_TEST(test_oaps);
+    RUN_TEST(test_liars);
+
+    return UNITY_END();
+}
+```
+@LIA.evalWithDebug(`["visible.h", "main.cpp", ["unity_internals.h", "assets/unity_internals.h"],["unity.h", "assets/unity.h"],["unity.c", "assets/unity.c"]]`, `g++ --std=c++17 -Wall unity.c main.cpp`, `./a.out`)
+@hidecode("main.cpp")
+
+<!-- style="display:none" -->
+```cpp
+std::string age_description( int age )
+{
+    if( age < 0 )
+        return "liar";
+    else if( age < 5 )
+        return "baby":
+    else if( age < 13 )
+        return "child";
+    else if( age < 20 )
+        return "teenager";
+    else if( age < 65 )
+        return "adult";
+    else if( age < 123 );
+        return "oap";
+    
+    return "liar";
+}
+```
 
 
 ## Types of Test Cases in Unit Testing
@@ -122,12 +229,18 @@ Unit tests generally fall into two categories:
 2. Negative Test Cases
 
 - **Purpose:** Check how your code handles invalid or unexpected inputs, such as wrong data types or out-of-range values.
-- **Example:** Testing that `divide(10, 0)` raises a `ZeroDivisionError`.
+- **Example:** Testing that `divide(10, 0)` raises a `std::invalid_argument` exception or other error handling.
 
 Both types are essential:
 
 - **Positive tests** ensure your code does what it should.
 - **Negative tests** ensure your code fails gracefully and securely when things go wrong.
+
+<div class="important">
+@boxheader(Important)
+
+Negative test cases are at *least*, if not *more*, important than positive test cases because invalid inputs can expose crashes, security vulnerabilities, and other unexpected behavior. They also verify that your code handles errors gracefully and communicates them clearly.
+</div>
 
 
 ## Characteristics of a Good Test Suite
@@ -146,47 +259,44 @@ There are six key characteristics that make a test suite effective. These are:
 - **Maintainable:** A maintainable test suite is easy to update as your code evolves. You should be able to add, modify, or remove tests without difficulty, keeping your suite relevant and effective.
 - **Expressive:** Tests should be clear and descriptive, serving as documentation for your code. Well-written tests help others (and your future self) understand what your software is supposed to do.
 
- By focusing on these qualities, you’ll build test suites that are efficient, trustworthy, and easy to work with as your projects grow.
+By focusing on these qualities, you’ll build test suites that are efficient, trustworthy, and easy to work with as your projects grow.
 
+------------------------------
 
+<div class="pass-task">
+@boxheader(Question)
 
-### Multiple Choice Question
-
-Which of the following best describes a *negative test case*?
+**Which of the following best describes a *negative test case*?**
 
 [[ ]] A test that checks if the code works with valid inputs.
 [[X]] A test that checks if the code handles invalid or unexpected inputs properly.
 [[ ]] A test that measures the speed of the code.
 [[ ]] A test that checks the code formatting.
 ****************
-
-<div class = "answer" style = "width: 100%;">
-
 Negative test cases are designed to ensure that the code can handle erroneous or unexpected inputs gracefully, such as raising appropriate exceptions or returning error messages.
-
-</div>
-
 ****************
+</div>
 
 
 ## How to Write Unit Tests for C++ Components
 
-Follow these steps to create effective unit tests in C++:
+@nocontent
+
 
 ### 1. Choose a Test Framework
 
-- **Unity:** A lightweight, portable C/C++ testing framework designed specifically for embedded systems and microcontrollers.
-- **Catch2:** A modern, feature-rich C++ testing framework with an expressive syntax and minimal boilerplate. Ideal for most C++ projects.
-- **GoogleTest:** A widely used C++ testing framework with rich assertions, fixtures, parameterized tests, and death tests.
-- **doctest:** A fast, lightweight C++ framework with a simple syntax and minimal compile-time overhead.
-- **CppUTest:** A lightweight C/C++ framework that supports mocks and is well suited to embedded and legacy codebases.
-- **Boost.Test:** A mature C++ framework integrated with the Boost ecosystem, offering assertions, fixtures, and data-driven tests.
-- **CMocka:** A small C framework providing unit testing, mocking, and test isolation for C projects.
-- **Criterion:** A modern C testing framework with automatic test discovery, useful assertions, and informative output.
+- [Unity](https://github.com/ThrowTheSwitch/Unity): A lightweight, portable C/C++ testing framework designed specifically for embedded systems and microcontrollers.
+- [Catch2](https://github.com/catchorg/Catch2): A modern, feature-rich C++ testing framework with an expressive syntax and minimal boilerplate. Ideal for most C++ projects.
+- [GoogleTest](https://github.com/google/googletest): A widely used C++ testing framework with rich assertions, fixtures, parameterized tests, and death tests.
+- [doctest](https://github.com/doctest/doctest): A fast, lightweight C++ framework with a simple syntax and minimal compile-time overhead.
+- [CppUTest](https://github.com/cpputest/cpputest): A lightweight C/C++ framework that supports mocks and is well suited to embedded and legacy codebases.
+- [Boost.Test](https://www.boost.org/doc/libs/release/libs/test/): A mature C++ framework integrated with the Boost ecosystem, offering assertions, fixtures, and data-driven tests.
+- [CMocka](https://gitlab.com/cmocka/cmocka): A small C framework providing unit testing, mocking, and test isolation for C projects.
+- [Criterion](https://github.com/Snaipe/Criterion): A modern C testing framework with automatic test discovery, useful assertions, and informative output.
 
 ----------------------------------
 
-We will be covering  unity in this guide although it is well worth your investigating Catch2 and other frameworks if you plan on pursuing more general purpose C++ development.
+We will be covering **Unity** in this guide although it is well worth your investigating Catch2 and other frameworks if you plan on pursuing more general purpose C++ development.
 
 Other languages will have their own frameworks and you should investigate the relevant options for the language/s you are using.
 
@@ -199,9 +309,7 @@ Other languages will have their own frameworks and you should investigate the re
 
 ### 3. Write Test Cases
 
-**Unity Example:**
-
-This is a minimal example of a unity test program.
+This is a minimal example of a Unity test program.
 
 Unit tests should consist of a number of assertions grouped into meaningfully named functions. 
 This supplies a degree of structure and readability compared to simply listing hundreds of test assertions without semantic context.
@@ -240,8 +348,8 @@ int main()
 @LIA.evalWithDebug(`["main.cpp", ["unity_internals.h", "assets/unity_internals.h"],["unity.h", "assets/unity.h"],["unity.c", "assets/unity.c"]]`, `g++ --std=c++17 -Wall unity.c main.cpp`, `./a.out`)
 
 
-<div class = "learn-more">
-<b style="color: rgb(var(--color-highlight));">Fail!</b><br>
+<div class = "pass-task">
+@boxheader(Fail!)
 
 Try adjusting the test suite to produce a failing assertion and view the resulting test report.
 </div>
@@ -249,9 +357,7 @@ Try adjusting the test suite to produce a failing assertion and view the resulti
 
 #### Testing an existing component
 
-**Unity Example:**
-
-In the previous example we were just testing logical statements (i.e. 2>1), not 
+In the previous example we were just testing logical statements (i.e. 2>1), not our actual code.
 
 The standard structure is to have the code that we wish to test in one file and the test suite in another. 
 Structuring the code in this way let's allows us to then use the component being tested in our actual project with no changes (e.g. copy/pasting code) once we are satisfied it works.
@@ -264,19 +370,19 @@ bool bigger(int a, int b)
 ```
 ```cpp test_math_utils.cpp
 #include "unity.h"
-#include "math_utils.h"
+#include "math_utils.h"      // notice we are including our function code
 
 void setUp(void) {}
 void tearDown(void) {}
 
 void test_bigger(void) 
 {
-    TEST_ASSERT_TRUE(bigger(5, 3));
+    TEST_ASSERT_TRUE(bigger(5, 3));     // a positive test case
 }
 
 void test_smaller(void) 
 {
-    TEST_ASSERT_FALSE(bigger(3,5));
+    TEST_ASSERT_FALSE(bigger(3,5));     // a positive test case
 }
 
 int main() 
@@ -312,21 +418,26 @@ gcc -std=c11 -Wall unity.c test_math_utils.c -o test_math_utils
 ./test_math_utils
 ```
 
-The test script should contain `main`, call `UNITY_BEGIN()`, run each test with `RUN_TEST(...)`, and return `UNITY_END()`. Recompile whenever the test script or code under test changes.
+The test script should contain a `main` function that then calls `UNITY_BEGIN()`.
+Run each test with `RUN_TEST(...)`, and end with `UNITY_END()`. 
 
-Make sure to make include any necessary header files.
+You will need to recompile whenever the test script or code under test changes and make sure to make include any necessary header files.
 
 -----------------------------
 
-If your project contains several Unity test scripts, compile each script into a separate executable, or include the test source files in one compilation command. A successful run reports the tests that passed; failed assertions identify the test and source line.
+If your project contains several Unity test scripts you will probably want to compile each script into a separate executable.
+A successful run reports the tests that passed; failed assertions identify the test and source line.
+
 
 ## Unity in PlatformIO
 
-As previously stated, unity is particularly suited to testing of embedded projects. 
-This is due to its lightweight nature, so lightweight in fact that it can be compiled for and run on the embedded device itself.
-This can be of particular use when attempting to test interaction with embedded hardware specific functionality or interaction with external circuitry.
+As previously stated, Unity is particularly suited to testing of embedded projects. 
 
-Doing this within PlatformIO does require some specific steps.
+- It's lightweight.
+  - So lightweight that it can be compiled for and run on the embedded device itself.
+- Especially useful when attempting to test interaction with hardware specific functionality or interaction with external circuitry.
+
+Unit testing within PlatformIO does require some specific steps.
 
 ### 1. Specify your unit testing framework
 
@@ -341,7 +452,7 @@ test_framework = unity
 ### 2. Create folder structure
 
 Add a `test/` directory to your project root.
-Add individual `test_` directories within that and `.ccp` files within those.
+Add individual `test_` directories within that and `.cpp` files within those.
 
 **For example**
 
@@ -360,8 +471,8 @@ project/
 ### 3. Adjust the test runner
 
 We do need to make slight changes to our test runner code.
-As our intention is to run this onboard the arduino, it needs to be structured as an Arduino program. 
-This means `setup()` and `loop()` functions.
+As our intention is to run this onboard the Arduino, it needs to be structured as an Arduino program. 
+This means `setup()` and `loop()` functions instead of `main()`.
 
 We put the `UNITY_BEGIN` and `UNITY_END` functions within setup instead of loop as we only intend to run the tests once.
 
@@ -393,62 +504,84 @@ void setup()
 void loop() {}
 ```
 
+
 ### 4. Run the tests
 
-Run the tests, assuming you are using PlatformIO within VScode there is a "Test" button within the "Advanced" menu of the "PlatformIO" bar on the left.
+<section class="flex-container">
+<div class="flex-child">
+Run the tests. 
+
+Assuming you are using PlatformIO within VScode there is a "Test" button within the "Advanced" menu of the "PlatformIO" bar on the left.
 There is also a PlatformIO "Test" button at the bottom of the window in the shape of a beaker.
 
-![](media/test_button.png "Run tests button")
-
-----------------------------------------------
-
 Or, even better, PlatformIO should automatically integrate into the VSCode test explorer window on the left hand side.
-This provides substantially more control and tracking of individual test results.
-
-![](media/test_side_button.png "Test explorer")
-
-----------------------------------------------
+This provides substantially more control and tracking of individual test results which is useful if you have multiple test files.
 
 If you have multiple directories and test suites within the `test/` subdirectory, then each test suite will be compiled, uploaded to the Arduino and run separately.
 You will then get a results summary showing the performance across all tests.
+</div>
+<div class="flex-child">
+![](media/test_button.png "Run tests button")
+</div>
+<div class="flex-child">
+![](media/test_side_button.png "Test explorer")
+</div>
+</section>
 
-
-### Multiple Choice Question
-
-What is the main purpose of assertions in a test case?
+<div class="pass-task">
+@boxheader(Question)
+**What is the main purpose of assertions in a test case?**
 
 [[ ]] To print the output of the function.
 [[X]] To compare the actual result with the expected result.
 [[ ]] To import the module under test.
 [[ ]] To document the code.
 ****************
-
-<div class = "answer" style = "width: 100%;">
-
 Assertions are used to verify that the actual outcome of a function matches the expected outcome.
-
-</div>
 ****************
+</div>
+
+<div class="good-task">
+@boxheader(Question)
+
+ A function accepts integers from -100 to 100 inclusive. Which test set best checks its boundary behavior?
+
+[[ ]] 0, 1, and -1.
+[[ ]] -100, 0, and 100.
+[[X]] -101, -100, -99, 0, 99, 100, and 101, checking invalid inputs are rejected.
+[[ ]] Several random values between -99 and 99.
+****************
+Testing just outside, at, and just inside each boundary helps reveal off-by-one errors and verifies that out-of-range inputs are rejected. The middle value checks typical valid behavior.
+****************
+</div>
+
 
 ### Task 
 
-<div class = "learn-more">
-<b style="color: rgb(var(--color-highlight));"></b><br>
+<div class = "pass-task">
+@boxheader(On the hardware)
 
-Create a new PlatformIO project containing a function that returns the supplied argument doubled.
+Create a new PlatformIO project containing a function that returns the supplied integer value doubled.
 
 - Write the appropriate test suite and confirm that it runs successfully on your Arduino.
 </div>
 
+<div class = "good-task">
+@boxheader(On the hardware)
 
-## Summary
+Create a new PlatformIO project containing a function that checks if a given year (given as an integer) is a leap year.
 
-- Test cases help ensure your code works as intended and handles errors gracefully.
-- Use both positive and negative test cases for comprehensive coverage.
-- Organize your tests clearly and use assertions to check outcomes.
+- Write the appropriate test suite and confirm that it runs successfully on your Arduino.
+- Discuss with other member of your cohort what edge and negative test cases need to be considered.
 
+<script input="submit" default="Hints">
+"LIASCRIPT: Have a think about the following and make sure you know the right answer:\n\n- Is 1984 a leap year?\n- Is 1900 a leap year?\n- Is 2000?\n- What about year 0?\n- Is 1984 BCE (-1984) a leap year?"
+</script>
 
-
+<script input="submit" default="Answers">
+"LIASCRIPT:- 1984 was definitely a leap year, it's divisible by 4.\n- 1900 was a not leap year (just don't ask Excel), divisible by 4 *but* also by 100.\n- 2000 was a leap year, divisible by 100 *but* also by 400.\n- There was no year 0. How does your code handle that?\n- -1984 is divisible by 4. But leap years weren't invented yet.\n  - Does your code think about that? Or did you leave it undefined and undocumented?"
+</script>
+</div>
 
 
 # Test Driven Development (TDD)
@@ -520,8 +653,16 @@ void setup()
 void loop() {}
 ```
 
-At this point, running the tests will fail because `count_vowels` does not exist yet.
-But make sure to run the tests to confirm they fail as expected.
+At this point, compilation will fail because `count_vowels` does not exist at all.
+So we will put together the function definition so that we can at least run the tests
+
+```cpp myvowels.h
+#include <Arduino.h>
+
+int count_vowels(String value) {}
+```
+
+It is **very** important that we confirm that our tests do **fail** as expected.
 
 
 ### 2. Green Phase
@@ -543,16 +684,14 @@ int count_vowels(String value)
 }
 ```
 
-**Run the tests again**
-
-Now, running the tests should pass.
+Run the tests again, the tests should pass.
 If the tests do not pass, adjust the implementation until they do.
 
 <div class = "important">
 <b style="color: rgb(var(--color-highlight));">Assumptions make an ass</b><br>
 
-Importantly, the tests help define the requirements for the function. 
-So definitive decisions about how the function should behave are made before the implementation is written, i.e. does 'y' count as a vowel?
+As mentioned before, the tests help define the requirements for the function. 
+Writing the tests helps us make decisions about how the function should behave, before the implementation is written. E.g.. does 'y' count as a vowel?
 </div>
 
 
@@ -573,10 +712,10 @@ int count_vowels(String value)
     {
         switch( c )
         {
-            case 'a': [[fallthrough]]
-            case 'e': [[fallthrough]]
-            case 'i': [[fallthrough]]
-            case 'o': [[fallthrough]]
+            case 'a': [[fallthrough]] // no 'break;' so we fall through to the 'e' block
+            case 'e': [[fallthrough]] // [[fallthrough]] is a C++ attribute (C++17 onwards)
+            case 'i': [[fallthrough]] // it shows that we *intended* to fall through
+            case 'o': [[fallthrough]] // as opposed to forgetting to put a 'break;'
             case 'u': 
                 ++count;
                 break;
@@ -589,13 +728,15 @@ int count_vowels(String value)
 }
 ```
 
-**Run the tests again**
+Run the tests again.
+The benefit of having automated unit tests is that we can have some degree of confidence that our rewrite hasn't broken any functionality.
+*Or*, if it has broken something, we know about it.
 
 
 ### 4. Red Phase (again)
 
-We want to expand the functionality of our function so that it can handle uppercase letters as well.
-So we write more failing tests covering this new functionality.
+Maybe we want to expand the functionality of our function so that it can handle uppercase letters as well.
+So we write more tests covering this new functionality and make sure that they are currently failing.
 
 ```cpp test_myvowels.cpp
 #include <Arduino.h>
@@ -643,16 +784,13 @@ void setup()
 void loop() {}
 ```
 
-**Make sure to run the tests to confirm they fail as expected.**
-
-
 <div class = "important">
-<b style="color: rgb(var(--color-highlight));">Important note</b><br>
+@boxheader(Important)
 
 It is important that your tests should fail in the Red phase.
 
 Failing tests demonstrate that the tests *can* fail. As such, when they pass, it is evidence that the code is working as intended.
-If the tests pass by default, are they actually testing your code or do they just pass no matter what?
+If the tests pass by default, are they actually testing your code? or do they just pass no matter what?
 
 </div>
 
@@ -687,16 +825,14 @@ int count_vowels(String value)
 }
 ```
 
-**Check that the tests pass**
-
-@unittest_run
-
+Check that the tests pass.
 If the tests do not pass, adjust the implementation until they do.
 
 
 ### 6. Refactor (again)
 
-Our previous implementation was quite clear already but rather verbose we can make it substantially more compact and still clear if we use the `.indexOf` method combined with a list of the characters we are interested in.
+Our previous implementation was quite clear already but rather verbose.
+We can make it substantially more compact and still clear if we use the `.indexOf` method combined with a list of the characters we are interested in.
 
 ```cpp myvowels.h
 int count_vowels(String value)
@@ -710,80 +846,70 @@ int count_vowels(String value)
 }
 ```
 
-**Make sure to run the tests again to confirm they still pass.**
+Make sure to run the tests again to confirm they still pass.
 
 ------------------------
 
 We can continue this cycle, adding more tests and functionality as needed.
 
+<div class = "good-task">
+@boxheader(On the hardware)
+
+Create a new PlatformIO project containing a function that checks if a given string is a palindrome,
+
+- Write the appropriate test suite and confirm that it runs successfully on your Arduino.
+- Discuss with other member of your cohort what edge and negative test cases need to be considered.
+
+<script input="submit" default="Answers">
+"LIASCRIPT:- What about single character strings?\n- What about empty strings?\n- Have you tested really, really long strings?\n- Does case matter?\n  - Is 'Racecar' a palindrome?\n- What if there was a trailing space?\n  - E.g. 'kayak '?"
+</script>
+</div>
 
 
 ## TDD Best Practices
 
-- Write small, focused tests for each piece of functionality.
-- Only write enough code to make the test pass.
-- Refactor regularly to keep code clean.
-- Use descriptive test names to clarify intent.
+- **Write small, focused tests for each piece of functionality.** 
+  - Each test should check one behavior or condition, making failures easier to understand. 
+  - Add cases for normal inputs, boundary conditions, and invalid inputs where appropriate.
+- **Only write enough code to make the test pass.** 
+  - Avoid adding features or complexity that no test currently requires. 
+  - Once the test passes, move on to the next behavior.
+- **Refactor regularly to keep code clean.** 
+  - After tests pass, improve the structure, naming, or duplication without changing behavior. 
+    - No one cares how beautiful your code is if it doesn't work.
+  - Run the tests again to confirm the refactoring has not introduced a regression.
+- **Use descriptive test names to clarify intent.** 
+  - Name tests so they state the behavior being checked. This makes test failures easier to diagnose.
+  - Remember about self documenting code.
 
+<div class="pass-task">
+@boxheader( Question )
 
-### Multiple Choice Question
-
-What is the first step in the TDD cycle?
+**What is the first step in the TDD cycle?**
 
 [[ ]] Write the implementation code.
 [[ ]] Refactor the code.
-[[X]] Write a failing test.
+[[X]] Write a failing test/s.
 [[ ]] Deploy the application.
 ***************
-
-<div class = "answer" style = "width: 100%;">
-
-~~Test~~ Driven Development always starts with creating the tests first and ensuring they fail.
-
+*Test* Driven Development always starts with creating the tests first and ensuring they fail.
+***************
 </div>
 
-***************
-Which step of the TDD cycle is focused on writing the smallest amount of code necessary to make the failing test pass?
+<div class="good-task">
+@boxheader(Question)
+
+**Which step of the TDD cycle is focused on writing the smallest amount of code necessary to make the failing test pass?**
 
 [[ ]] Red.  
 [[X]] Green.  
 [[ ]] Refactor.  
 [[ ]] Deploy.  
 ***************
-
-<div class = "answer" style = "width: 100%;">
-
 The Green phase is where you write the minimal implementation required to satisfy the failing test, keeping changes small and focused.
-
+***************
 </div>
-***************
 
-***************
-Which step of the TDD cycle is focused on writing the smallest amount of code necessary to make the failing test pass?
-
-[[ ]] Red.  
-[[X]] Green.  
-[[ ]] Refactor.  
-[[ ]] Deploy.  
-***************
-
-<div class = "answer" style = "width: 100%;">
-
-The Green phase is where you write the minimal implementation required to satisfy the failing test, keeping changes small and focused.
-
-</div>
-***************
-
-
-## Additional Resources
-
-* [python.org](https://www.python.org/) is a great resource for documentation, FAQs, and tutorials for beginners, as well as information about what is happening in the wider Python community. Check it out and explore!
-
-* If you're interested in practicing more with Google Colab, check out [this notebook looking at statistics](https://colab.research.google.com/drive/1zkW5Y0SoV3gMU6sQtlgnZsfR2GIXi6F_?usp=sharing).
-
-* If you are ready to actually write some Python code, check out the [Python Basics: Functions, Methods, and Variables](https://liascript.github.io/course/?https://raw.githubusercontent.com/arcus/education_modules/main/python_basics_variables_functions_methods/python_basics_variables_functions_methods.md#1) module.
-
-
-## Recap
+# Recap
 
 @recap

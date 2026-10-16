@@ -1,4 +1,8 @@
-
+:root {
+  --doworkgreen: #21B04D;
+  --doworkyellow: #FFD10F;
+  --doworkred: #ED1C24;
+}
 
 .overview {
   border-left: 4px solid rgba(var(--color-highlight));
@@ -14,6 +18,9 @@
   -webkit-font-smoothing: antialiased;
 }
 
+.pass-task,
+.good-task,
+.adv-task,
 
 .answer,
 .behind-the-scenes,
@@ -37,6 +44,9 @@
   width: 100%;
 }
 
+.pass-task:before,
+.good-task:before,
+.adv-task:before,
 .answer:before,
 .behind-the-scenes:before,
 .care:before,
@@ -59,6 +69,21 @@
   color: rgb(var(--color-highlight));
 }
 
+
+.pass-task:before {
+  content: "\1F152";
+  color: var(--doworkgreen);
+}
+
+.good-task:before {
+  content: "\1F158";
+  color: var(--doworkyellow);
+}
+
+.adv-task:before {
+  content: "\1F150";
+  color: var(--doworkred);
+}
 
 .answer:before {
   content: "\f058";
