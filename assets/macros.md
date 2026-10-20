@@ -108,6 +108,19 @@ int main() {
 @LIA.eval(`["visible.h", "main.cpp"]`, `g++ main.cpp`, `./a.out`)
 @hidecode("main.cpp")
 @end
+
+@addcppmain1
+```cpp -main.cpp
+#include <iostream>
+#include <@0>
+int main() { 
+  #include "visible.h"
+}
+```
+@LIA.eval(`["visible.h", "main.cpp"]`, `g++ main.cpp`, `./a.out`)
+@hidecode("main.cpp")
+@end
+
 -->
 
 # Module Macros
