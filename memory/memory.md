@@ -87,9 +87,45 @@ When working with Arduino, it's important to be mindful of the available memory 
 A quick description of the computer memory. By memory we mean RAM, not disk space (i.e. hard drives). When programs are run they are loaded into memory, as programs run they use memory to store variables etc.
 
 
-Memory consists of blocks. Each block of memory is the same size and has an address. This memory address describes each block's position in memory and acts as a unique index for each block. We can visualise memory as two columns, one column of addresses and one column of the values that are stored in each of those addresses.
+Memory consists of blocks. Each block of memory is the same size and has an address. 
+This memory address describes each block's position in memory and acts as a unique index for each block. 
+We can visualise memory as two columns, one column of addresses and one column of the values that are stored in each of those addresses.
+Or like an excel spreadsheet, each cell has a unique id and can fit some information.
 
-![](.guides/img/aa.png)
+The number of bits used for an address limits how many distinct memory locations can be addressed. 
+The actual amount of *usable* memory may be lower, depending on the hardware and how the address space is used but the reason that 
+<script input="number" value="32" min="8" max="128" step="1" output="I">@input</script>
+bit operating systems generally max out at 
+<script>
+const bytes = 2 ** @input(`I`);
+const units = ["B", "KiB", "MiB", "GiB", "TiB"];
+const scale = Math.min(
+  Math.floor(Math.log(bytes) / Math.log(1024)),
+  units.length - 1
+);
+(bytes / 1024 ** scale).toFixed(0) + " " + units[scale];
+</script>
+of RAM is because they can't address more than 
+<script>let b = 2 ** @input(`I`); b + " bytes"</script>.
+
+```ascii Simplified memory layout (addresses are illustrative)
+Address       Memory block
++------------+  +----------+
+| 0x0000     |->| 00000000 |
++------------+  +----------+
+| 0x0001     |->| 00000000 |
++------------+  +----------+
+| 0x1002     |->| 00000000 |
+
+           *etc*
+
+| 0xFFFFFFFD |->| 00000000 |
++------------+  +----------+
+| 0xFFFFFFFE |->| 00000000 |
++------------+  +----------+
+| 0xFFFFFFFF |->| 00000000 |
++------------+  +----------+
+```
 
 
 ## Variables
