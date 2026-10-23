@@ -536,7 +536,7 @@ If you do not re-compile your changed code, the tests are still checking the ori
 </div>
 
 
-## Unity in PlatformIO
+## Unity and PlatformIO
 
 As previously stated, Unity is particularly suited to testing of embedded projects. 
 
@@ -680,6 +680,19 @@ Test Driven Development (TDD) is a software development approach where you write
 
 This approach helps ensure that your code is well-tested from the start, encourages simple designs, and improves code quality.
 
+
+```mermaid @mermaid
+flowchart LR
+  a((⠀Red⠀))
+  b((⠀Green⠀))
+  c((Refactor))
+  a --> b --> c --> a
+style a fill:#ef4444
+style b fill:#22c55e
+style c fill:#facc15
+```
+
+
 ## Benefits of TDD
 
 - **Improved Code Quality:** Writing tests first helps clarify requirements and leads to cleaner, more maintainable code.
@@ -691,17 +704,15 @@ This approach helps ensure that your code is well-tested from the start, encoura
 
 Let's walk through a simple TDD cycle for a function that counts the number of vowels in a string.
 
-``` ascii
-             .-----------.  
-            (     Red     )  
-             '-----------'
-            ^             \
-           /               \
-          /                 \
-         /                   V
-   .-----------.        .-----------.  
-  (  Refactor   ) <----(    Green    )  
-   '-----------'        '-----------'
+```mermaid @mermaid
+flowchart LR
+  a((⠀Red⠀))
+  b((⠀Green⠀))
+  c((Refactor))
+  a --> b --> c --> a
+style a fill:#ef4444
+style b fill:#22c55e
+style c fill:#facc15
 ```
 
 
@@ -748,8 +759,11 @@ So we will put together the function definition so that we can at least run the 
 int count_vowels(String value) {}
 ```
 
-It is **very** important that we confirm that our tests do **fail** as expected.
-
+<div class="important">
+@boxheader(Important)
+It is **very** important that we confirm that our tests really do fail at this stage.
+This is proof that the tests *can* fail.
+</div>
 
 ### 2. Green Phase
 
@@ -873,7 +887,7 @@ void loop() {}
 <div class = "important">
 @boxheader(Important)
 
-It is important that your tests should fail in the Red phase.
+Reminder, it really is important that your tests should initially fail in the Red phase.
 
 Failing tests demonstrate that the tests *can* fail. As such, when they pass, it is evidence that the code is working as intended.
 If the tests pass by default, are they actually testing your code? or do they just pass no matter what?
