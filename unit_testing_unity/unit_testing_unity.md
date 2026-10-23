@@ -61,6 +61,7 @@ Previous versions:
 link:  ../assets/styles.css
 import: ../assets/macros.md
 import: https://raw.githubusercontent.com/dscroft/CodeRunner/refs/heads/master/README.md
+import: https://raw.githubusercontent.com/dscroft/mermaid_template/refs/heads/master/README.md
 
 @unittest_fix
 
@@ -72,14 +73,26 @@ import: https://raw.githubusercontent.com/dscroft/CodeRunner/refs/heads/master/R
 -->
 
 
-# Unity Unit Testing
+# Unit Testing
 
 @overview
 
 
-## Unit Testing
+## What is Unit Testing
 
 Unit testing is a software testing technique where individual units or components of a software are tested in isolation from the rest of the application. The primary goal is to validate that each unit of the software performs as expected.
+
+```mermaid @mermaid
+%%{init: {"theme": "redux-color", "look": "neo"}}%%
+flowchart LR
+
+  unit[Unit Testing] 
+  integration[Integration Testing]
+  system[System Testing]
+  accept[Acceptance Testing]
+
+  unit ---> integration ---> system ---> accept
+```
 
 
 ## What are Test Cases?
@@ -91,6 +104,42 @@ Test cases typically include:
 - **Input data:** The values or objects you provide to the code under test.
 - **Expected outcome:** What you anticipate the code should return or how it should behave.
 - **Assertions:** Statements that compare the actual outcome to the expected one.
+
+
+### Manual Unit Testing
+
+It is possible to unit test your functions by manually feeding in each of the test cases.
+
+For a small number of tests, you can record the cases in a spreadsheet. 
+For example, if testing a `divide(a, b)` function.
+
+| Test case | Inputs | Expected result | Actual result | Pass? |
+|---|---|---|---|---|
+| Divide positive numbers | `a = 10`, `b = 2` | `5` | `5` | Yes |
+| Divide negative numbers | `a = -10`, `b = -2` | `5` | `5` | Yes |
+| Divide by zero | `a = 10`, `b = 0` | `std::invalid_argument` error | `std::invalid_argument` error | Yes |
+
+Record the actual result for each case and mark it as passing only when it matches the expected result. 
+You can add columns such as date, tester, or notes if you need a more detailed record.
+
+
+### Automated Unit Testing
+
+Manually testing each case can work for a small function or a quick experiment, but it becomes difficult to manage as a project grows. A real application may have many functions, input combinations, and edge cases to check. Repeating those checks by hand takes time, makes results harder to reproduce, and increases the chance that a case will be skipped or recorded incorrectly. Manual testing is still useful for exploring behaviour and checking an application interactively, but it is not an efficient way to rerun a large set of checks after every change.
+
+Automated unit testing addresses this problem by expressing test cases as executable code. A test supplies known inputs to a unit, such as a function, then uses assertions to compare the actual result with the expected result. A test framework can run many such cases and report which passed or failed. In a C++ project, the tests and code under test are compiled, then the test executable is run; a failing assertion provides a useful indication of which behaviour needs investigation.
+
+Because automated tests can be rerun consistently, they are especially useful after modifying code: they help reveal whether a change has broken behaviour that previously worked. Tests can also be run automatically as part of a build or deployment process. 
+
+<div class="important">
+@boxheader(Absence of evidence is not evidence of absence)
+
+A passing test suite does not prove that a program is free of defects.
+The quality of your testing depends on choosing meaningful cases, including boundary conditions, and maintaining the tests as the design changes. 
+It is also entirely possible for your test cases you have bugs.
+
+Automated Unit Testing is however a substantial improvement on the alternatives, i.e. no testing or manual testing.
+</div>
 
 
 ## Why Write Test Cases?
@@ -221,15 +270,22 @@ std::string age_description( int age )
 
 Unit tests generally fall into two categories:
 
-1. Positive Test Cases
+<section class="flex-container">
+<div class="flex-child">
+Positive Test Cases
+===================
 
 - **Purpose:** Confirm that your code works correctly when given valid, expected inputs.
 - **Example:** Testing that `add(2, 3)` returns `5`.
-
-2. Negative Test Cases
+</div>
+<div class="flex-child">
+Negative Test Cases
+===================
 
 - **Purpose:** Check how your code handles invalid or unexpected inputs, such as wrong data types or out-of-range values.
 - **Example:** Testing that `divide(10, 0)` raises a `std::invalid_argument` exception or other error handling.
+</div>
+</section>
 
 Both types are essential:
 
@@ -240,6 +296,35 @@ Both types are essential:
 @boxheader(Important)
 
 Negative test cases are at *least*, if not *more*, important than positive test cases because invalid inputs can expose crashes, security vulnerabilities, and other unexpected behavior. They also verify that your code handles errors gracefully and communicates them clearly.
+</div>
+
+<div class="pass-task">
+@boxheader(Question)
+**What is the main purpose of assertions in a test case?**
+
+[[ ]] To print the output of the function.
+[[X]] To compare the actual result with the expected result.
+[[ ]] To import the module under test.
+[[ ]] To document the code.
+****************
+Assertions are used to verify that the actual outcome of a function matches the expected outcome.
+****************
+</div>
+
+<div class="good-task">
+@boxheader(Question)
+
+A function accepts integers from -100 to 100 inclusive. 
+ 
+**Which test set best checks its boundary behavior?**
+
+[[ ]] 0, 1, and -1.
+[[ ]] -100, 0, and 100.
+[[X]] -101, -100, -99, 0, 99, 100, and 101, checking invalid inputs are rejected.
+[[ ]] Several random values between -99 and 99.
+****************
+Testing just outside, at, and just inside each boundary helps reveal off-by-one errors and verifies that out-of-range inputs are rejected. The middle value checks typical valid behavior.
+****************
 </div>
 
 
@@ -278,9 +363,9 @@ Negative test cases are designed to ensure that the code can handle erroneous or
 </div>
 
 
-## How to Write Unit Tests for C++ Components
+# How to Unit Test
 
-@nocontent
+
 
 
 ### 1. Choose a Test Framework
@@ -300,12 +385,16 @@ We will be covering **Unity** in this guide although it is well worth your inves
 
 Other languages will have their own frameworks and you should investigate the relevant options for the language/s you are using.
 
+
 ### 2. Organize Your Tests
 
 - Create a new file named `test_{module_name}.cpp` (e.g., `test_math_utils.cpp`).
   - You do not *have* to prefix them with `test_` but it is very much the convention and just general good practise.
-- Include the appropriate test framework header (`"unity.h"` for Unity, but e.g. `<catch2/catch_all.hpp>`).
-- Include the source module you want to test.
+- Include the appropriate test framework header.
+  - `"unity.h"` for Unity.
+  - But e.g. `<catch2/catch_all.hpp>` for Catch2.
+- Include the source code you want to test.
+
 
 ### 3. Write Test Cases
 
@@ -325,24 +414,24 @@ void tearDown(void) {}
 
 void test_bigger(void) 
 {
-    TEST_ASSERT_TRUE(2 > 1);
-    TEST_ASSERT_FALSE(1 > 2);
+  TEST_ASSERT_TRUE(2 > 1);
+  TEST_ASSERT_FALSE(1 > 2);
 }
 
 void test_equals(void) 
 {
-    TEST_ASSERT_EQUAL_INT(42, 41+1);
+  TEST_ASSERT_EQUAL_INT(42, 41+1);
 }
 
 int main() 
 {
-    UNITY_BEGIN();
+  UNITY_BEGIN();
 
-    // list all test functions
-    RUN_TEST(test_bigger);
-    RUN_TEST(test_equals);
+  // list all test functions
+  RUN_TEST(test_bigger);
+  RUN_TEST(test_equals);
 
-    return UNITY_END();
+  return UNITY_END();
 }
 ```
 @LIA.evalWithDebug(`["main.cpp", ["unity_internals.h", "assets/unity_internals.h"],["unity.h", "assets/unity.h"],["unity.c", "assets/unity.c"]]`, `g++ --std=c++17 -Wall unity.c main.cpp`, `./a.out`)
@@ -351,7 +440,7 @@ int main()
 <div class = "pass-task">
 @boxheader(Fail!)
 
-Try adjusting the test suite to produce a failing assertion and view the resulting test report.
+Try adjusting the test suite to produce a failing assertion and view the resulting report.
 </div>
 
 
@@ -363,9 +452,10 @@ The standard structure is to have the code that we wish to test in one file and 
 Structuring the code in this way let's allows us to then use the component being tested in our actual project with no changes (e.g. copy/pasting code) once we are satisfied it works.
 
 ```cpp math_utils.h
+/* Return true if a is greater than b */
 bool bigger(int a, int b)
 {
-    return a > b;
+  return a > b;
 }
 ```
 ```cpp test_math_utils.cpp
@@ -377,12 +467,12 @@ void tearDown(void) {}
 
 void test_bigger(void) 
 {
-    TEST_ASSERT_TRUE(bigger(5, 3));     // a positive test case
+  TEST_ASSERT_TRUE(bigger(5, 3));     // a positive test case
 }
 
 void test_smaller(void) 
 {
-    TEST_ASSERT_FALSE(bigger(3,5));     // a positive test case
+  TEST_ASSERT_FALSE(bigger(3,5));     // a positive test case
 }
 
 int main() 
@@ -394,7 +484,6 @@ int main()
 }
 ```
 @LIA.evalWithDebug(`["math_utils.h", "test_math_utils.cpp", ["unity_internals.h", "assets/unity_internals.h"],["unity.h", "assets/unity.h"],["unity.c", "assets/unity.c"]]`, `g++ --std=c++17 -Wall unity.c test_math_utils.cpp`, `./a.out`)
-
 
 
 ### 4. Run Your Tests
@@ -410,6 +499,8 @@ Then run the compiled test executable:
 ```bash
 ./test_math_utils
 ```
+
+--------------------------
 
 For a C test script, use `gcc` instead:
 
@@ -427,6 +518,22 @@ You will need to recompile whenever the test script or code under test changes a
 
 If your project contains several Unity test scripts you will probably want to compile each script into a separate executable.
 A successful run reports the tests that passed; failed assertions identify the test and source line.
+
+
+<div class="pass-task">
+@boxheader(Question)
+**Why do we need to re-compile our test suite every time we change our code?**
+
+[[ ]] To run the tests.
+[[ ]] To compare the actual result with the expected result.
+[[X]] To include the latest changes to the code under test in the test executable.
+[[ ]] To document the code.
+****************
+Remember that C++ code must be translated via machine code into an executable in order to be run.
+The executable contains the code as it was when it was compiled, not the code as it is *now*.
+If you do not re-compile your changed code, the tests are still checking the original code, not your new code.
+****************
+</div>
 
 
 ## Unity in PlatformIO
@@ -456,16 +563,18 @@ Add individual `test_` directories within that and `.cpp` files within those.
 
 **For example**
 
-```txt
-project/
-├── platformio.ini
+
+```mermaid @mermaid
+treeView-beta
+project/            ## Your project directory
 ├── include/
-│   └── math_utils.h
+│   └── math_utils.h ## Code being tested
+├── test/
+|   └── test_math_utils/
+│       └── test_math_utils.cpp :::highlight ## Containing your test cases
 ├── src/
-│   └── main.cpp
-└── test/
-    └── test_math_utils
-        └── test_math_utils.cpp
+│   └── main.cpp   
+└── platformio.ini ## Project configuration file
 ```
 
 ### 3. Adjust the test runner
@@ -474,7 +583,15 @@ We do need to make slight changes to our test runner code.
 As our intention is to run this onboard the Arduino, it needs to be structured as an Arduino program. 
 This means `setup()` and `loop()` functions instead of `main()`.
 
-We put the `UNITY_BEGIN` and `UNITY_END` functions within setup instead of loop as we only intend to run the tests once.
+We put the `UNITY_BEGIN` and `UNITY_END` functions within `setup()` instead of `loop()` as we only intend to run the tests once.
+
+<div class="important">
+@boxheader(Important)
+
+This is the `test_math_utils.cpp` file, **not** the normal `main.cpp` file.
+This file only needs to contain the testing code.
+</div>
+
 
 ```cpp
 #include <Arduino.h>
@@ -507,10 +624,6 @@ void loop() {}
 
 ### 4. Run the tests
 
-<section class="flex-container">
-<div class="flex-child">
-Run the tests. 
-
 Assuming you are using PlatformIO within VScode there is a "Test" button within the "Advanced" menu of the "PlatformIO" bar on the left.
 There is also a PlatformIO "Test" button at the bottom of the window in the shape of a beaker.
 
@@ -519,44 +632,17 @@ This provides substantially more control and tracking of individual test results
 
 If you have multiple directories and test suites within the `test/` subdirectory, then each test suite will be compiled, uploaded to the Arduino and run separately.
 You will then get a results summary showing the performance across all tests.
-</div>
-<div class="flex-child">
-![](media/test_button.png "Run tests button")
-</div>
-<div class="flex-child">
-![](media/test_side_button.png "Test explorer")
-</div>
-</section>
+
+![](media/test_button.png "Run tests button") ![](media/test_side_button.png "Test explorer") ![](media/test_results_console.png "Test results")
 
 <div class="pass-task">
-@boxheader(Question)
-**What is the main purpose of assertions in a test case?**
+@boxheader(On the hardware)
 
-[[ ]] To print the output of the function.
-[[X]] To compare the actual result with the expected result.
-[[ ]] To import the module under test.
-[[ ]] To document the code.
-****************
-Assertions are used to verify that the actual outcome of a function matches the expected outcome.
-****************
-</div>
-
-<div class="good-task">
-@boxheader(Question)
-
- A function accepts integers from -100 to 100 inclusive. Which test set best checks its boundary behavior?
-
-[[ ]] 0, 1, and -1.
-[[ ]] -100, 0, and 100.
-[[X]] -101, -100, -99, 0, 99, 100, and 101, checking invalid inputs are rejected.
-[[ ]] Several random values between -99 and 99.
-****************
-Testing just outside, at, and just inside each boundary helps reveal off-by-one errors and verifies that out-of-range inputs are rejected. The middle value checks typical valid behavior.
-****************
+Create a PlatformIO project with the required directory structure and use Unity to test the `bigger` function on your Arduino board.
 </div>
 
 
-### Task 
+### Tasks
 
 <div class = "pass-task">
 @boxheader(On the hardware)
