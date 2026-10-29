@@ -25,13 +25,7 @@ Previous versions:
 ## Overview
 @comment
 
-**Is this module right for me?** @long_description
-
 **Estimated time to completion:** @estimated_time_in_minutes minutes
-
-**Pre-requisites**
-
-@pre_reqs
 
 **Learning Objectives**
 
