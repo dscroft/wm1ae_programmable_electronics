@@ -47,6 +47,7 @@ Previous versions:
 
 import: https://raw.githubusercontent.com/dscroft/CodeRunner/master/README.md
 import: https://raw.githubusercontent.com/liaTemplates/AVR8js/main/README.md
+import: https://raw.githubusercontent.com/LiaTemplates/aframe/0.0.6/README.md
 
 import: ../assets/macros.md
 -->
@@ -55,6 +56,39 @@ import: ../assets/macros.md
 
 This module assumes and recommends that you use the PlatformIO IDE within Visual Studio Code for your development work. 
 You are free to chose other development environments if you wish but you are wholly responsible to adapting the supplied instructions and materials to your chosen alternative.
+
+<!-- style="display:none" -->
+https://grabcad.com/library/arduino-uno-r4-wifi-1
+
+```html @AFRAME.scene
+<a-scene renderer="physicallyCorrectLights: false">
+  <a-assets>
+    <a-asset-item id="myModel" src="assets/media/arduino_r4.glb"></a-asset-item>
+  </a-assets>
+
+  <a-light
+    type="point"
+    color="#FFFFFF"
+    intensity="6"
+    position="0 -1 3">
+  </a-light>
+
+  <a-gltf-model
+    src="#myModel"
+    position="0 0 -0.7"
+    rotation="65 0 0"
+    scale="10 10 10"
+    animation="property: rotation; to: 65 360 0; dur: 20000; loop: true; easing: linear">
+  </a-gltf-model>
+
+  <a-entity
+    camera
+    position="0 0 0"
+    rotation="0 0 0"
+    look-controls="enabled: true">
+  </a-entity>
+</a-scene>
+```
 
 
 ## Arduino
@@ -83,6 +117,8 @@ The primary reason for choosing the R4 Wifi is its built in debugging capabiliti
 </div>
 </section>
 
+
+
 ## Visual Studio Code
 
 Visual Studio Code (vscode) is a free, open-source code editor developed by Microsoft. 
@@ -99,6 +135,15 @@ If you encounter anywhere that the instructions do not work with VSCodium please
 
 </div>
 
+<div class="Important">
+@boxheader(University machines)
+
+At present it is possible to run PlatformIO and the "C C++ Toolbox" on the university machines. 
+However attempting to compile/upload projects that are stored in your University Onedrive is extremely problematic due to the unusual folder names of folders on onedrive. You will need to copy your work onto the actual university computer (i.e. C:\Users\YOUR_STUDENT_ID\Documents) to be able to work on it.
+
+Code uploaded to and run on your Arduino should be fine, but it is not currently possible to run .exe files that you have compiled yourself on University machines, this limits the use of the "C C++ Toolbox" on University machines.
+</div>
+
 
 ### Installation
 
@@ -107,28 +152,6 @@ If you encounter anywhere that the instructions do not work with VSCodium please
 2. Make sure that VSCode runs.
 
 ![VSCode starting screen with dark theme](media/VS_Code.png "VSCode starting screen with dark theme")
-
-----------------------------------
-
-Portable version
-================
-
-If you cannot install the software then it is possible to run Visual Studio Code as a [portable app](https://code.visualstudio.com/docs/setup/portable).
-VScode is available via the software center on WMG machines, but installing extensions and configuring your preferences on new machines is generally time consuming.
-
-This approach allows you to carry your installation on a USB stick, with extensions you are looking at about 2GB minimum.
-
-1. Visit the Visual Studio Code website and download the version for your platform.
-    - If on Windows you will need the correct .zip file (probably the x64 version).
-    - If on Linux you will need the correct .tar.gz file (probably the x64 version).
-    - I don't have a Mac and so am not clear on which file you need. If you figure it out send me a merge request with missing details.
-    - [Download](https://code.visualstudio.com/Download).
-2. Extract the contents to your desired location.
-3. Open the directory you just extracted to and find the "Code" executable file.
-4. Create a directory called "data" in the same location as the "Code" executable.
-5. Run the "Code" executable.
-  - Use as normal.
-
 
 ## PlatformIO
 
@@ -241,6 +264,81 @@ If you made it through all these steps and everything was successful, a "[build]
 ![](media/cmake.png "Successful installation and build with CMake")
 
 
+## Troubleshooting and Workarounds
+
+Nothing on this page.
+
+### Portable version
+
+If you are relying on the University machines then it is possible to run Visual Studio Code as a [portable app](https://code.visualstudio.com/docs/setup/portable).
+
+This approach allows you to carry your installation on a USB stick, with extensions you are looking at about 2GB minimum.
+
+VScode is available via the software center on WMG machines, but installing extensions and configuring your preferences on a new machine each time is painfully time consuming.
+As these instructions as probably only relevant to users of the University machines, the instructions ignore all other systems.
+
+1. Visit the Visual Studio Code website and download the version for your platform.
+    - Windows x64 version.
+    - [Download](https://code.visualstudio.com/Download).
+2. Extract the contents to your desired location.
+3. Open the directory you just extracted to and find the "Code" executable file.
+4. Create a directory called "data" in the same location as the "Code" executable.
+5. Run the "Code" executable.
+    - Make sure VScode loads.
+6. Close VSCode.
+7. Create a new file called "RUN.bat" in the "data" directory containing the text below.
+    - Later on this will ensure that PlatformIO stores files with our portable app and not in the default location.
+8. Run the "RUN.bat" file.
+    - Make sure VSCode loads.
+    - Always use this file to run the program.
+
+```txt Run.bat
+set "PLATFORMIO_CORE_DIR=%~dp0data\platformio" 
+
+"%~dp0Code.exe"
+```
+
+### Virtual machine path
+
+Some machines at the University will not allow you to run self compiled code for security reasons.
+If you are limited to these machine , you'll need to take the Virtual Machine option.
+
+VScode supports "Remote Development", i.e. you can have a copy of VScode running on your local machine that is connected to a different machine where your work lives.
+
+- This approach is common in industry, especially when development takes place on remote servers, cloud environments, or machines with restricted local permissions.
+- We are going to run a Virtual Machine (VM).
+    - All of our work, compilation and programs will run inside the VM, and we will connect into that VM from VScode.
+
+I am not going to detail the setup process for this option here as it is significantly outside the module focus.
+Instead you can download [this](file) and extract it to a USB drive or your University storage space.
+Total size will be approaching 10Gb.
+
+Once you have extracted the files you will see two .bat files.
+If you are using PlatformIO to do Arduino development you can simply run VSCode using the @@@@@.bat and it will work as normal.
+If you are doing general C/C++ development you will need to do the following.
+
+1. Run @@@@@@.bat.
+    - This will start a VM containing minimal Debian Linux install.
+    - If will take a minute to start, you need to leave it running whilst you are using it.
+    - You do not need to login in, but for reference, Username: student, Password: student.
+2. Run @@@@@.bat
+    - This will start VSCode.
+    - It does not particularly matter what order you run the .bat as long as the VM has time to load before the next step.
+3. Once VScode has loaded, connect to the remote machine.
+    - Click on the `≶` icon in the very bottom left corner.
+    - Or Ctrl+Shift+P, 
+4. Wait for it to connect.
+
+<div class="Important">
+@boxheader(Important)
+
+Remember, all your work exists inside the Virtual Machine. 
+If you delete or damage it, your work is also lost.
+
+When following lab tasks, remember that you are developing on a Linux VM and so Linux instructions apply.
+</div>
+
+
 # Version Control
 
 Version control is a system that records changes to files over time so that you can recall specific versions later.
@@ -287,14 +385,14 @@ However it is not required.
 As such the specific agents that you may choose to use are up to you.
 This module will not be supplying licenses for specific agents.
 If you choose to use an agent, then there is almost certainly an extension to integrate them with your VSCode environment.
-For example if you have signed up for a Github education account and have access to Copilot, then you can install the [Copilot extension](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot).
+For example if you have signed up for a Github education account and have access to Copilot, then BSCode will prompt you to sign into your account.
 
-Alternatively you can run your own local agents using Ollama and integrate with VSCode .
+Alternatively you can run your own local agents using Ollama and integrate them with VSCode.
 
 
 # LiaScript
 
-The lab materials for the course are written in LiaScript, i.e. this is written in LiaScript.
+The lab materials for the course are written in LiaScript, e.g. this is written in LiaScript.
 If you want to look into Markdown based presentation systems then feel free but it's not directly relevant to this module with the possible exception of writing the documentation for your Git repositories.
 
 -----------------------------
@@ -341,6 +439,8 @@ Passive Example
 <section class="flex-container">
 <div class="flex-child" style="min-width:500px">
 ```cpp
+#include <iostream>
+
 int main()
 {
   std::cout << "Hello World!" << std::endl;
@@ -359,6 +459,8 @@ Active Example
 <section class="flex-container">
 <div class="flex-child" style="min-width:500px">
 ```cpp
+#include <iostream>
+
 int main()
 {
   std::cout << "Hello World!" << std::endl;
@@ -403,7 +505,7 @@ Arduino examples will generally be obvious as they include `void setup()` and `v
   <wokwi-led color="red" pin="11"></wokwi-led>
 </div>
 ```cpp
-constexpr uint8_t ledPin = 11;
+constexpr uint8_t ledPin { 11 };
 
 void setup() 
 {
@@ -413,7 +515,7 @@ void setup()
 
 void loop() 
 {
-  static bool state = HIGH;                // store state
+  static bool state { HIGH };                // store state
 
   digitalWrite( ledPin, state );           // set led
   Serial.println( state ? "ON" : "OFF" );  // print message
@@ -446,9 +548,27 @@ If using your own computer
 3. Install the C C++ Toolkit extension in Visual Studio Code.
 4. Check that the software works.
 
+If using a University computer
+==============================
+
+1. Practice installing Visual Studio Code on them.
+    - You will need to do this every time you use a new machine.
+    - **Or**, create a portable install and make sure you can run it.
+2. Install the PlatformIO extension in Visual Studio Code.
+3. Install the C C++ Toolkit extension in Visual Studio Code.
+4. Check that the software works.
+
+If using a locked down system
+==============================
+
+1. Download the virtual machine files.
+2. Ensure you are able to run and connect to the VM from VScode.
+3. Check that the software works.
+
 Everyone
 ========
 
 1. Create account on an online Git repository hosting service (e.g. WMG's MyGit, GitHub or GitLab).
 2. Collect your Arduino Uno R4 Wifi and accessories.
+3. Make sure you are familiar with LiaScript and running the active examples.
    
