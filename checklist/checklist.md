@@ -38,29 +38,33 @@ Taking parts from other student's kit/s without their knowledge and permission i
 Replacing list parts using other student's kit/s is an academic offense and will be referred.
 
 In the event that part of your kit breaks, contact the module teaching staff.
-</div>
 
 You will require this kit to be able to complete your coursework.
+</div>
 
 -----------------------------------------
 
+Make sure that you have all items on the checklist.
+
 <div style="display: flex; gap: 20px;">
-<div style="width: 300px">
-@hoveritem(`Numbered Project Box`, https://upload.wikimedia.org/wikipedia/commons/c/cb/RBG-LED.jpg)
-@hoveritem(`Breadboard`, https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/Breadboard.png/250px-Breadboard.png)
+<div style="width: 400px">
+@hoveritem(`Numbered Project Box`, checklist/media/box.jpg)
+@hoveritem(`*With ↑ Breadboard*`, https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Electronics-White-Breadboard.jpg/960px-Electronics-White-Breadboard.jpg)
 @hoveritem(`Arduino Uno R4 Wifi`, https://store.arduino.cc/cdn/shop/files/ABX00087_00.front_494x371.jpg)
 @hoveritem(`Arduino R3 Motor Shield`, https://store.arduino.cc/cdn/shop/files/A000079_01.iso_494x392.jpg)
 @hoveritem(`SR04 Ultrasonic sensor`, https://mm.digikey.com/Volume0/opasdata/d220001/medias/images/6032/MFG_SEN-24049.jpg)
-[[X]] Servo motor with arm
+@hoveritem(`TJA1051T/3 CAN Bus Transceiver`, checklist/media/can.jpg )
+@hoveritem(`Servo motor`, checklist/media/servo.webp)
+@hoveritem(`*With ↑ servo arm*`, checklist/media/arm.png)
 @hoveritem(`Blue DG01D-­E motor with encoder`, https://mm.digikey.com/Volume0/opasdata/d220001/medias/images/496/MFG_ROB-16413.jpg)
-@hoveritem(`Encoder cable for DG01D-E motor`, https://mm.digikey.com/Volume0/opasdata/d220001/medias/images/496/MFG_ROB-16413.jpg)
+@hoveritem(`*With ↑ Encoder cable*`, checklist/media/encoder_cable.jpg)
 @hoveritem(`Multiple LEDs`, https://upload.wikimedia.org/wikipedia/commons/9/90/Electronic-Component-Red-LED.jpg)
 @hoveritem(`Multiple Male-to-male jumper wires`, checklist/media/m2m.jpg)
 @hoveritem(`Multiple Make-to-female jumper wires`, checklist/media/m2f.jpg)
 @hoveritem(`USB A to USB C, male-to-male cable`, https://mm.digikey.com/Volume0/opasdata/d220001/medias/images/4566/MFG_DH-20Mseries.jpg)
 </div>
-<div id="image-container" style="width: 400px">
-    <img id="hover-image" src="" alt="">
+<div id="image-container" style="width: 400px; position: relative">
+  <img id="hover-image" src="" alt="" style="position: absolute; top: 50%; transform: translateY(-50%)">
 </div>
 </div>
 
@@ -90,8 +94,7 @@ You will require this kit to be able to complete your coursework.
 
 # Confirmation
 
-<!-- style="display: none" -->
-<iframe src="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=vc-6Ce9HZUSSZTVG8ur2vCNBHc6R-IRFqapLtLMY9gZUQVRaRlo4QU5TS1M4VzlYTlpLQUlZMDFEVC4u">
+**Some browsers block the form. If you have issues, use [this direct link](https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=vc-6Ce9HZUSSZTVG8ur2vCNBHc6R-IRFqapLtLMY9gZUQVRaRlo4QU5TS1M4VzlYTlpLQUlZMDFEVC4u&embed=true).**
 
 <iframe id="form" 
     src="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=vc-6Ce9HZUSSZTVG8ur2vCNBHc6R-IRFqapLtLMY9gZUQVRaRlo4QU5TS1M4VzlYTlpLQUlZMDFEVC4u&embed=true" 
