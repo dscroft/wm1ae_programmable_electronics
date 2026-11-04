@@ -63,7 +63,7 @@ https://grabcad.com/library/arduino-uno-r4-wifi-1
 ```html @AFRAME.scene
 <a-scene renderer="physicallyCorrectLights: false">
   <a-assets>
-    <a-asset-item id="myModel" src="assets/media/arduino_r4.glb"></a-asset-item>
+    <a-asset-item id="myModel" src="https://dscroft.github.io/wm1ae_programmable_electronics/assets/media/arduino_r4.glb"></a-asset-item>
   </a-assets>
 
   <a-light
@@ -286,7 +286,7 @@ As these instructions as probably only relevant to users of the University machi
 5. Run the "Code" executable.
     - Make sure VScode loads.
 6. Close VSCode.
-7. Create a new file called "RUN.bat" in the "data" directory containing the text below.
+7. Create a new file called "RUN.bat" in the same directory as the "Code" executable, containing the text below.
     - Later on this will ensure that PlatformIO stores files with our portable app and not in the default location.
 8. Run the "RUN.bat" file.
     - Make sure VSCode loads.
@@ -294,6 +294,7 @@ As these instructions as probably only relevant to users of the University machi
 
 ```txt Run.bat
 set "PLATFORMIO_CORE_DIR=%~dp0data\platformio" 
+set "SCOOP=%~dp0data\scoop"
 
 "%~dp0Code.exe"
 ```
@@ -310,24 +311,30 @@ VScode supports "Remote Development", i.e. you can have a copy of VScode running
     - All of our work, compilation and programs will run inside the VM, and we will connect into that VM from VScode.
 
 I am not going to detail the setup process for this option here as it is significantly outside the module focus.
-Instead you can download [this](file) and extract it to a USB drive or your University storage space.
+Instead you can download [this](https://livewarwickac-my.sharepoint.com/:u:/g/personal/u2273650_live_warwick_ac_uk/IQC8uHWu7xjcSIeH-vKw2dpjAfm_PCJUCIYfa-6LLG0vNoY?e=Sbv2oT) and extract it to a USB drive or your University storage space.
 Total size will be approaching 10Gb.
 
 Once you have extracted the files you will see two .bat files.
 If you are using PlatformIO to do Arduino development you can simply run VSCode using the @@@@@.bat and it will work as normal.
 If you are doing general C/C++ development you will need to do the following.
 
-1. Run @@@@@@.bat.
+1. Run `RUN DEBIAN VM.bat`.
     - This will start a VM containing minimal Debian Linux install.
     - If will take a minute to start, you need to leave it running whilst you are using it.
+        - Should say `debian login:` when ready.
     - You do not need to login in, but for reference, Username: student, Password: student.
-2. Run @@@@@.bat
+2. Run `RUN VSCODE.bat`
     - This will start VSCode.
     - It does not particularly matter what order you run the .bat as long as the VM has time to load before the next step.
 3. Once VScode has loaded, connect to the remote machine.
     - Click on the `≶` icon in the very bottom left corner.
-    - Or Ctrl+Shift+P, 
+        - `Connect to Host...`
+    - Or Ctrl+Shift+P, `>Remote SSH: Connect to Host...`
+    - Select `DebianDevelopmentVM`.
 4. Wait for it to connect.
+5. Open your files in the Explorer window.
+    - Top icon on left.
+    - Or Ctrl+Shift+E.
 
 <div class="Important">
 @boxheader(Important)
@@ -515,7 +522,7 @@ void setup()
 
 void loop() 
 {
-  static bool state { HIGH };                // store state
+  static bool state { HIGH };              // store state
 
   digitalWrite( ledPin, state );           // set led
   Serial.println( state ? "ON" : "OFF" );  // print message
