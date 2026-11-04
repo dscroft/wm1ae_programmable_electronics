@@ -302,10 +302,11 @@ Negative test cases are at *least*, if not *more*, important than positive test 
 @boxheader(Question)
 **What is the main purpose of assertions in a test case?**
 
-[[ ]] To print the output of the function.
-[[X]] To compare the actual result with the expected result.
-[[ ]] To import the module under test.
-[[ ]] To document the code.
+<!-- data-max-trials="1"-->
+[( )] To print the output of the function.
+[(X)] To compare the actual result with the expected result.
+[( )] To import the module under test.
+[( )] To document the code.
 ****************
 Assertions are used to verify that the actual outcome of a function matches the expected outcome.
 ****************
@@ -318,10 +319,11 @@ A function accepts integers from -100 to 100 inclusive.
  
 **Which test set best checks its boundary behavior?**
 
-[[ ]] 0, 1, and -1.
-[[ ]] -100, 0, and 100.
-[[X]] -101, -100, -99, 0, 99, 100, and 101, checking invalid inputs are rejected.
-[[ ]] Several random values between -99 and 99.
+<!-- data-max-trials="1"-->
+[( )] 0, 1, and -1.
+[( )] -100, 0, and 100.
+[(X)] -101, -100, -99, 0, 99, 100, and 101, checking invalid inputs are rejected.
+[( )] Several random values between -99 and 99.
 ****************
 Testing just outside, at, and just inside each boundary helps reveal off-by-one errors and verifies that out-of-range inputs are rejected. The middle value checks typical valid behavior.
 ****************
@@ -353,10 +355,10 @@ By focusing on these qualities, you’ll build test suites that are efficient, t
 
 **Which of the following best describes a *negative test case*?**
 
-[[ ]] A test that checks if the code works with valid inputs.
-[[X]] A test that checks if the code handles invalid or unexpected inputs properly.
-[[ ]] A test that measures the speed of the code.
-[[ ]] A test that checks the code formatting.
+[( )] A test that checks if the code works with valid inputs.
+[(X)] A test that checks if the code handles invalid or unexpected inputs properly.
+[( )] A test that measures the speed of the code.
+[( )] A test that checks the code formatting.
 ****************
 Negative test cases are designed to ensure that the code can handle erroneous or unexpected inputs gracefully, such as raising appropriate exceptions or returning error messages.
 ****************
@@ -524,10 +526,10 @@ A successful run reports the tests that passed; failed assertions identify the t
 @boxheader(Question)
 **Why do we need to re-compile our test suite every time we change our code?**
 
-[[ ]] To run the tests.
-[[ ]] To compare the actual result with the expected result.
-[[X]] To include the latest changes to the code under test in the test executable.
-[[ ]] To document the code.
+[( )] To run the tests.
+[( )] To compare the actual result with the expected result.
+[(X)] To include the latest changes to the code under test in the test executable.
+[( )] To document the code.
 ****************
 Remember that C++ code must be translated via machine code into an executable in order to be run.
 The executable contains the code as it was when it was compiled, not the code as it is *now*.
@@ -987,10 +989,10 @@ Create a new PlatformIO project containing a function that checks if a given str
 
 **What is the first step in the TDD cycle?**
 
-[[ ]] Write the implementation code.
-[[ ]] Refactor the code.
-[[X]] Write a failing test/s.
-[[ ]] Deploy the application.
+[( )] Write the implementation code.
+[( )] Refactor the code.
+[(X)] Write a failing test/s.
+[( )] Deploy the application.
 ***************
 *Test* Driven Development always starts with creating the tests first and ensuring they fail.
 ***************
@@ -1001,10 +1003,10 @@ Create a new PlatformIO project containing a function that checks if a given str
 
 **Which step of the TDD cycle is focused on writing the smallest amount of code necessary to make the failing test pass?**
 
-[[ ]] Red.  
-[[X]] Green.  
-[[ ]] Refactor.  
-[[ ]] Deploy.  
+[( )] Red.  
+[(X)] Green.  
+[( )] Refactor.  
+[( )] Deploy.  
 ***************
 The Green phase is where you write the minimal implementation required to satisfy the failing test, keeping changes small and focused.
 ***************
