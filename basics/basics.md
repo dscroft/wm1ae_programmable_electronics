@@ -1,5 +1,5 @@
 <!--
-module_id: isr
+module_id: basics
 author:   David Croft
 email:    david.croft@warwick.ac.uk
 version: 0.0.1
@@ -9,17 +9,16 @@ narrator: UK English Female
 
 mode: Textbook
 
-title: Interrupt Service Routines
-comment:  This module introduces the the concepts of interrupt service routines, and how to implement them in Arduino.
-long_description: This module introduces the the concepts of interrupt service routines in Arduino, and how to implement them.
-estimated_time_in_minutes: 20
-
+title: Basics of Arduino Programming
+comment:  This module introduces the structure of Arduino sketches, basic syntax, digital I/O and Serial communications.
+long_description: This module covers the Arduino sketch structure, hardware pin control, serial communication, blocking vs non-blocking code, and fundamental patterns for embedded programming.
+estimated_time_in_minutes: 45
 
 @learning_objectives  
-- Understand the concept of interrupt service routines and their importance in embedded systems.
-- Learn how to implement basic interrupt service routines in Arduino.
-- Gain hands-on experience with using interrupts in Arduino projects.
-
+- Understand Arduino sketch structure (setup and loop)
+- Learn basic digital I/O (digitalWrite, digitalRead)
+- Understand timing functions (millis, delay)
+- Understand basic Serial communications
 @end
 
 @style
@@ -54,184 +53,370 @@ import: https://raw.githubusercontent.com/liaTemplates/AVR8js/main/README.md
 import: ../assets/macros.md
 -->
 
+# Basics of Arduino and Embedded Programming
 
-### Non-blocking code
+@overview
 
-Simple microcontrollers such as the AVR microcontrollers used in Arduino have a single CPU core, and so can only execute one instruction at a time. 
-This is the case for most single-core systems, however more capable processors such as those used in general purpose computers can run operating systems that allow for multitasking, which gives the illusion of multiple instructions being executed at the same time.
+## Arduino Sketch Structure
 
-- In reality, the operating system is rapidly switching between different tasks.
+Every Arduino program (called a **sketch**) has the same basic structure:
 
-For a microcontroller without an operating system, this means that if the main loop is executing a long-running task, it will not be able to respond to events such as button presses or sensor readings until it has finished. This can lead to unresponsive behaviour in the system.
-
-- Or inputs may be missed entirely if they occur while other activities are being performed.
-
-### a
-
-This is a simple example of blocking code, where the main loop is executing a long-running task (toggling an LED on and off every 3 seconds) and is unable to respond to button presses until it has finished.
-
-- The red LED will toggle on and off every 3 seconds.
-- The green LED will illuminate when the button is pressed.
-
-**Run the simulation and try holding down the green button.**
-
-- How long does it take for the green LED to respond to the button press?
-
-<div id="blocking-demo">
-  <wokwi-led color="red" pin="13" label="13"></wokwi-led>
-  <wokwi-led color="green" pin="12" label="12"></wokwi-led>
-  <wokwi-pushbutton color="green" pin="2" label="2"></wokwi-pushbutton>
-  <span id="simulation-time"></span>
-</div>
-
-```cpp Simple blocking code example
-const uint8_t redPin = 13;
-const uint8_t greenPin = 12;
-const uint8_t buttonPin = 2;
-
+```cpp
 void setup() 
 {
-  Serial.begin(115200);
-
-  pinMode(redPin, OUTPUT);
-  pinMode(greenPin, OUTPUT);
-  pinMode(buttonPin, INPUT_PULLUP);
+  // Runs once when the Arduino starts
+  // Use this to initialize pins, Serial, libraries, etc.
 }
 
 void loop() 
 {
-  // turn the red LED on and off every second
-  digitalWrite(redPin, HIGH);
-  delay(3000);
-  digitalWrite(redPin, LOW); 
-  delay(3000);
-
-  // check if the button is pressed and turn the green LED on if it is
-  digitalWrite(greenPin, digitalRead(buttonPin));
+  // Runs repeatedly after setup() completes
+  // Your main program logic goes here
 }
 ```
-@AVR8js.sketch(blocking-demo)
+
+Think of it this way:
+
+- **setup()**: Constructor - prepare the system
+- **loop()**: Main thread - keep running forever
 
 
+## A Simple Example: Blinking LED
 
-### Non blocking
-
-An alternative to code we just saw is to write our code to be non-blocking. 
-I.e. that the execution of one part of the code does not block the execution of other parts of the code.
-
-- Non-blocking code is often more complex to write and understand but it allows for more responsive behaviour in the system.
-
-
-<div id="nonblocking-demo">
-  <wokwi-led color="red" pin="13" label="13"></wokwi-led>
-  <wokwi-led color="green" pin="12" label="12"></wokwi-led>
-  <wokwi-pushbutton color="green" pin="2" label="2"></wokwi-pushbutton>
-  <span id="simulation-time"></span>
+<div id="simple-demo">
+  <wokwi-led color="red" pin="11"></wokwi-led>
 </div>
+```cpp
+#include <Arduino.h>             // all the functions, e.g. delay()
 
-```cpp Simple non-blocking code example
-const uint8_t redPin = 13;
-const uint8_t greenPin = 12;
-const uint8_t buttonPin = 2;
+constexpr uint8_t LED_PIN { 13 };  // Define pin number
 
 void setup() 
 {
-  Serial.begin(115200);
-
-  pinMode(redPin, OUTPUT);
-  pinMode(greenPin, OUTPUT);
-  pinMode(buttonPin, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);      // Configure pin 13 as output
 }
 
 void loop() 
 {
-  static unsigned long redToggleTime = 0;
-  static const unsigned long redToggleInterval = 3000;
+  digitalWrite(LED_PIN, HIGH);   // LED on
+  delay(1000);                   // Wait 1 second (1000 milliseconds)
+  digitalWrite(LED_PIN, LOW);    // LED off
+  delay(1000);                   // Wait 1 second
+}
+```
+@AVR8js.sketch(simple-demo)
 
-  const unsigned long currentTime = millis();
+This is your first embedded program! Let's break it down:
 
-  if(redToggleTime <= currentTime)
+- `const uint8_t LED_PIN = 13`: Define the pin number as a constant
+- `pinMode(LED_PIN, OUTPUT)`: Tell Arduino that pin 13 is an output
+- `digitalWrite(LED_PIN, HIGH)`: Send 5V to the pin (LED on)
+- `delay(1000)`: Wait 1000 milliseconds
+- `digitalWrite(LED_PIN, LOW)`: Send 0V to the pin (LED off)
+
+Different Arduino pins have different capabilities, but almost all of them allow for simple digital reading and writing.
+The pins are clearly numbered on the board one of the first things to check if your system is not working is that you are using the pin/s that you think that you are using.
+
+<div class="pass-task">
+@boxheader(In the browser)
+
+Run the example, what happens with the LED?
+
+Adjust the example so that it stays on for twice as long as it is off.
+</div>
+
+
+## Real hardware
+
+Simulation is useful for basic testing and learning, but we ultimately need to run our code on actual hardware.
+To do this, we must build the code and upload it to our microcontroller.
+
+Microcontroller manufacturers generally provide an Integrated Development Environment (IDE) for their hardware. Arduino is no exception.
+
+The official Arduino IDE is user-friendly and provides the basic features needed to get code onto a board, but it lacks most of the advanced functionality offered by more capable IDEs.
+
+For this reason, we will use Visual Studio Code (VS Code) with the PlatformIO ecosystem for Arduino development, rather than the official Arduino IDE.
+
+Creating your first project
+=========================
+
+1. Open VSCode.
+2. Open the PlatformIO Home within VSCode.
+    - House icon ⌂ on the bottom bar.
+    - Or Ctrl+Shift+P, ">PlatformIO: PlatformIO Home"
+3. Click on the "+ New Project" button.
+4. Create your project.
+    - You need to give it a *meaningful* name.
+    - Pick the correct board type, i.e. 'Arduino UNO R4 WiFi'
+    - You can leave it in the default location or create it somewhere else.
+5. In the Explorer window on the left, find and open the 'src/main.cpp' file.
+6. Replace the contents of main.cpp with the blinking LED code.
+7. Build your code.
+    - Using the Build ✓ icon on the bottom bar.
+    - Or Ctrl+Shift+P, ">PlatformIO: Build".
+    - Make sure it builds successfully.
+7. Plug your Arduino into your PC using the USB.
+8. Upload the code to your Arduino 
+    - Using the Upload → icon on the bottom bar.
+    - Or Ctrl+Shift+P, ">PlatformIO: Upload"
+    - Make sure it uploads successfully.
+
+If everything has worked, you should be one of the LEDS on your Arduino board blinking.
+
+![PlatformIO Home](https://docs.platformio.org/en/stable/_images/platformio-ide-vscode-welcome.png "PlatformIO Home")
+![Project Creation Wizard](media/project_wizard.png "Project Creation Wizard")
+![Project Structure](media/workspace.png "Project file structure")
+
+----------------------------------
+
+In our example code we are using pin 13, this pin does support digital read and write, but it is a bit special in that it come connected to a built in LED as well. 
+This makes it especially easy to see the pin's state.
+
+<div class="pass-task">
+@boxheader(On the hardware)
+
+If you have not already done so, follow the [ecosystem](../ecosystem/ecosystem.md) instructions.
+
+Upload the Blinking LED example to the Arduino board from your module kit and confirm it works.
+</div>
+
+
+# Serial communications
+
+In order to get better insights into what our code is doing we need to add some log messages.
+
+The Arduino can send text to your PC over the USB cable using the `Serial` object. 
+It can also receive text sent from your PC.
+
+How serial works
+================
+
+Serial communication sends data one bit at a time over a pair of wires, one for each direction:
+
+- **TX** (transmit): the pin a device sends data out on.
+- **RX** (receive): the pin a device listens for data on.
+
+The two devices are connected crosswise: the TX of one goes to the RX of the other, and vice versa. They also share a common ground.
+
+```ascii
+ Arduino         PC/other
++--------+      +--------+
+| TX  ---+------+-->  RX |
+| RX  <--+------+---  TX |
+| GND ---+------+--- GND |
++--------+      +--------+
+```
+
+Most modern PCs have no TX/RX pins. 
+To bridge the gap we use a **USB-to-serial adapter**, which converts between USB and the TX/RX signals a microcontroller understands.
+
+- Many Arduinos or other MCU dev boards have this adapter built in. It is wired to the microcontroller's RX/TX pins, and shows up on your PC as a virtual serial (COM) port.
+- Some boards, including the Uno R4, handle USB directly in the microcontroller, so no extra adapter is needed, but it still appears on the PC as a serial port.
+- Various adapters (FTDI, CP2102, CH340) can be used to talk to boards that have no built in adapter.
+
+<div class="warning">
+On Arduino boards that use an adapter, pin 0 is often (RX) and pin 1 (TX).
+This means that you cannot use those pins for other purposes *and* have serial communication.
+
+On the Uno R4, the USB connection is the `Serial` object and pins 0 and 1 are a separate serial port called `Serial1`.
+</div>
+
+
+## Starting serial
+
+Call `Serial.begin()` once in `setup()` to start the connection. 
+The number is the **baud rate**, the speed of the connection in bits per second. 
+Both ends must use the same speed, 9600 and 115200 are common choices.
+
+```cpp
+void setup()
+{
+  Serial.begin(9600);
+}
+```
+
+<div class="learn-more">
+@boxheader(Learn more)
+
+`.begin()` does have additional configuration options, but assuming that you are just communicating with a PC or another Arduino you'll never need to change them.
+</div>
+
+
+## Sending text
+
+Once we have configured our baud rate we can start sending messages.
+
+`Serial.print()` sends the value as text.
+`Serial.println()` does the same and then adds a new line at the end.
+
+This is invaluable for debugging! Always add Serial output when something isn't working so that you can see what is happening in your code.
+
+```cpp
+#include <Arduino.h>
+
+void setup()
+{
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  Serial.print("Uptime (ms): ");   // no new line
+  Serial.println(millis());        // new line after the value
+  delay(1000);
+}
+```
+@AVR8js.sketch(uptime)
+
+<div class="adv-task">
+@boxheader(In the browser)
+
+Run the example.
+
+**Do you notice anything odd about the timestamps being output?**
+
+<script input="submit" default="Answers">
+"LIASCRIPT: The timestamps are not exactly 1000ms apart.\n\n`delay` does wait 1000ms, but we also need to consider the time it takes to run the rest of the code when we are considering delays.\n\nIt doesn't matter here, but it can for bigger and/or real applications."
+</script>
+
+</div>
+
+------------------------------------
+
+PlatformIO
+==========
+
+To see the serial messages output from the Arduino, open the serial monitor in PlatformIO (the plug icon on the bottom bar, or Ctrl+Shift+P, ">PlatformIO: Serial Monitor"). 
+
+<div class="important">
+@boxheader(Important)
+
+Make sure that `Serial.begin()` matches your monitor baud rate.
+If it doesn't, you wont see anything, or wont see anything intelligible.
+
+We will cover adjusting this later on the module.
+</div>
+
+<div class="pass-task">
+@boxheader(On the hardware)
+
+Upload the uptime example to your Arduino board and monitor the serial messages in PlatformIO.
+</div>
+
+<div class="good-task">
+@boxheader(On the hardware)
+
+Adjust the code so that the uptime is output in seconds rather than milliseconds.
+</div>
+
+### Formatting
+
+`print()` and `println()` can also format numbers in various ways or output in different bases:
+
+```cpp
+Serial.print(value);              // Print raw value
+Serial.print(value, HEX);         // Print as hexadecimal
+Serial.print(value, BIN);         // Print as binary
+Serial.println(3.14, 2);          // Print float with 2 decimal places
+```
+
+
+## Receiving text
+
+We have seen how to send text via serial, but this is a two-way communications link. We can also receive text on our serial connection.
+
+`Serial.read()` returns the next character waiting on the connection and remove it from the buffer.
+This is assuming that there *is* a character waiting. 
+If there is no character then it returns `-1` instead.
+
+`Serial.available()` returns how many characters received and are waiting to be read. `0` means nothing has arrived.
+
+`Serial.readString()` returns a string containing all the characters available within a timeout. I.e. after whatever is available now plus the next 1000ms.
+
+There are multiple other `Serial` methods, but this is a good opportunity for you to learn about reading [the documentation](https://docs.arduino.cc/language-reference/en/functions/communication/serial/).
+
+No module will (or could) cover every single feature. It is your responsibility to explore the documentation and experiment with the available methods to identify the full capabilities and existing builtin functionality.
+
+```cpp
+#include <Arduino.h>
+
+void setup()
+{
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  if( Serial.available() > 0 )
   {
-    // toggle the red LED
-    digitalWrite(redPin, !digitalRead(redPin));
+    const char received = Serial.read();
 
-    // schedule the next toggle time
-    redToggleTime += redToggleInterval;
+    Serial.print( "You sent: " );
+    Serial.println( received );
   }
-
-  // check if the button is pressed and turn the green LED on if it is
-  digitalWrite(greenPin, digitalRead(buttonPin));
 }
 ```
-@AVR8js.sketch(nonblocking-demo)
+@AVR8js.sketch(simple-echo)
 
+<div class="pass-task">
+@boxheader(In the browser)
 
-Code explanation
-===========
-
-This code uses a technique called time-based scheduling to toggle the red LED on and off every 3 seconds without blocking the execution of the main loop.
-
-- The `redToggleTime` variable keeps track of the next time the red LED should be toggled.
-  - Notice that this variable is `static`, because we want it to retain its value across multiple iterations of the loop.
-- The `redToggleInterval` variable defines the interval at which the red LED should be toggled (3 seconds in this case).
-  - This value never changes, so it is defined as a `static const`.
-- The `currentTime` variable is simply a meaningful name for the value returned by `millis()`.
-  - I.e. the number of milliseconds that have elapsed since the program started. 
-  - This value never changes within a single iteration of the loop, so it is defined as `const`.
-
-Every action in the main loop is non-blocking, i.e. it can be executed quickly.
-
-- So the loop will be running many times per second.
-- Each time through, it checks:
-  - Is time to toggle the red LED?
-  - Is the button pressed?
-- If either of those conditions are true, it quickly performs the necessary action and then continues on to the next iteration of the loop.
-
-
-
-
-
-
-
-
-### Demo
-
-Here we have a simple demo of an ISR being used to toggle an LED on and off in response to a button press.
-
-- Note that the main loop function has no interaction with the button or the LED.
-  - Everything is handled by the ISR regardless of what the main loop is doing.
-
------------------------
-
-<div id="analog-demo" style="position: relative; height: 340px;">
-  <wokwi-arduino-uno style="position: absolute; top: 130px; left: 0px; transform: rotate(0deg);"></wokwi-arduino-uno>
-
-  <wokwi-analog-joystick vert="A0" style="position: absolute; top: 0px; left: 300px;"></wokwi-analog-joystick>
-
-  <wokwi-potentiometer pin="14" style="position: absolute; top: 0px; left: 300px;"></wokwi-potentiometer>
+Type a character into the serial monitor's input box and send it, the simulated Arduino will echo it back.
 </div>
 
-```cpp Simple ISR example
-const uint8_t numPins = 6;
-const uint8_t pins[] = {14, A1, A2, A3, A4, A5};
+<div class="good-task">
+@boxheader(On the hardware)
+
+Control the built in LED from the serial monitor:
+
+- Sending `1` turns the LED on.
+- Sending `0` turns the LED off.
+
+Print a message confirming each change, e.g. "LED on". Any other character should print "Unknown command".
+
+To send text in PlatformIO, start the serial monitor, click on the monitor and just type.
+</div>
+
+<div class="adv-task">
+@boxheader(On the hardware)
+
+With a friend, connect your two Arduinos together on pins 0 and 1 and try sending messages between boards.
+
+<script input="submit" default="Hint">
+"LIASCRIPT: Remember that on the Uno R4, the serial pins on 0 and 1 are controlled by `Serial1`, not `Serial`."
+</script>
+
+<script input="submit" default="Hint">
+"LIASCRIPT: Remember that RX needs to connect to TX. Make sure pins 0 and 1 on the first Arduino connect to pins 1 and 0 on the other."
+</script>
+</div>
+
+<div class="learn-more">
+@boxheader(Bytes)
+
+`.available()` does not return the number of letters that are waiting, it returns the number of *bytes*.
+Equally `.read()` does not return a letter, it returns the next byte of data.
+Assuming that you are using English and what's known as ASCII encoding, 1 letter is 1 byte in size so it does work interchangably for out purposes for the moment.
+</div>
 
 
-void setup() 
-{
-  Serial.begin(115200);
 
- // pinMode( 14, INPUT );
-}
+# Summary
 
-void loop() 
-{
-  
-    Serial.print( digitalRead(14), DEC );
-  
-  Serial.println();
-  delay(3000);
-}
-```
-@AVR8js.sketch(analog-demo)
+Best Practices for Embedded Programming
+========================================
+
+1. **Use meaningful pin names**: `constexpr uint8_t LED_PIN { 13 };` instead of magic numbers.
+    - A magic number is a number in your code that is not explained.
+    - I.e. `digitalWrite( 13, HIGH )` is a magic number. What is pin 13?
+    - `digitalWrite( LED_PIN, HIGH )` is much clearer.
+2. **Use Serial debugging** early and often
+
+Recap
+=====
+
+- **Arduino sketches** have setup() and loop() functions
+- **digitalWrite/digitalRead**: Control and read logic levels (HIGH/LOW)
+- **Serial**: Essential for debugging
 
 
