@@ -148,7 +148,7 @@
 }
 
 .lia-header__middle {
-  background: url(https://dscroft.github.io/wm9QF_programming_for_artificial_intelligence_labs/assets/media/wmg-logo.svg);
+  background: url(https://dscroft.github.io/wm1ae_programmable_electronics/assets/media/wmg-logo.svg);
   background-repeat: no-repeat;
   background-size: contain;
 }
@@ -179,8 +179,9 @@
     background: rgba(var(--lia-grey),0.2);
 }
 
-
-
+/*.lia-canvas.lia-mode--textbook .lia-slide__content {
+  max-width: 120.0rem;
+}*/
 
 .icon-compile-circle:before {
 content: "\f144";
