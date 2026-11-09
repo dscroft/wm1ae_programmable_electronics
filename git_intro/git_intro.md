@@ -58,7 +58,14 @@ Previous versions:
 @overview
 
 <div class = "gratitude">
-<b style="color: rgb(var(--color-highlight));">Thank you!</b><br>
+@boxheader(Thank you!)
+
+Credit for the original versions and origin of these materials is given to the [Data and Analytics for Research Training (DART) Program](https://arcus.github.io/education_modules/) and the [Children's Hospital of Philadelphia (CHOP) Research Institute](https://www.research.chop.edu/).
+
+<!-- style="max-width: 300px; margin: auto;" -->
+![](https://github.com/arcus/education_modules/raw/main/assets/media/chop-logo.svg)
+
+-----------------------
 
 Material for this module was adapted from [Software Carpentry's git basics lesson](https://swcarpentry.github.io/git-novice/01-basics.html), generously published under a [CC-BY 4.0](https://swcarpentry.github.io/git-novice/LICENSE.html) license. 
 The content has been lightly edited, as well as the formatting and presentation style. 
