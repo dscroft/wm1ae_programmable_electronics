@@ -73,9 +73,6 @@ We are tremendously grateful to [The Carpentries](https://carpentries.org/) for 
 
 </div>
 
-----------------
-
-@attribution
 
 
 ## How we keep track of changing documents

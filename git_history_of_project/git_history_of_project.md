@@ -89,7 +89,6 @@ We are tremendously grateful to [The Carpentries](https://carpentries.org/) for 
 
 </div>
 
-@attribution
 
 ## Lesson Preparation
 
