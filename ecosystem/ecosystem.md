@@ -336,7 +336,7 @@ If you are doing general C/C++ development you will need to do the following.
     - Top icon on left.
     - Or Ctrl+Shift+E.
 
-<div class="Important">
+<div class="important">
 @boxheader(Important)
 
 Remember, all your work exists inside the Virtual Machine. 
