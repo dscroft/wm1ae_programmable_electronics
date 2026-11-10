@@ -315,7 +315,7 @@ Instead you can download [this](https://livewarwickac-my.sharepoint.com/:u:/g/pe
 Total size will be approaching 10Gb.
 
 Once you have extracted the files you will see two .bat files.
-If you are using PlatformIO to do Arduino development you can simply run VSCode using the @@@@@.bat and it will work as normal.
+If you are using PlatformIO to do Arduino development you can simply run VSCode using the `RUN VSCODE.bat` and it will work as normal.
 If you are doing general C/C++ development you will need to do the following.
 
 1. Run `RUN DEBIAN VM.bat`.
