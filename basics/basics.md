@@ -57,9 +57,36 @@ import: ../assets/macros.md
 
 @overview
 
-## Arduino Sketch Structure
+# Arduino C++ vs C/C++
 
-Every Arduino program (called a **sketch**) has the same basic structure:
+Arduino code uses C and C++, but it is compiled for a specific microcontroller and its limited hardware resources, rather than for a desktop computer with an operating system and abundant memory and processing power. Although much of the language is the same, the available libraries, hardware interfaces, and practical programming choices depend on the board.
+
+These differences are especially noticeable on classic AVR boards such as the Uno R3. Its 8-bit processor runs at 16 MHz and has only 2 KB of SRAM and 32 KB of flash, so large data structures, deep call stacks, and memory-heavy library features can quickly exceed the available resources. Even familiar types can differ from desktop expectations; for example, an `int` is typically 16 bits on AVR. Code must therefore be mindful of memory use, integer sizes, and the cost of abstractions.
+
+More capable boards widen those possibilities. The Uno R4 uses a 32-bit, 48 MHz microcontroller with 32 KB of SRAM and 256 KB of flash, making more complex C++ code and libraries practical and bringing the programming experience closer to general-purpose C/C++. It is still embedded code, however: memory and processing remain limited compared with a desktop, and hardware, timing, and board-specific APIs still shape what the program can do.
+
+
+# Minimal program
+
+Your standard C or C++ program has to have a `main` function. 
+On Arduino the structure of a minimal program changes and it instead requires a `setup` and a `loop` function.
+
+<section class="flex-container">
+<div class="flex-child">
+General C/C++
+=============
+
+```cpp
+int main()
+{
+  // does not perform any visible work
+  return 0;
+}
+```
+</div>
+<div class="flex-child">
+Arduino C++
+===========
 
 ```cpp
 void setup() 
@@ -74,6 +101,11 @@ void loop()
   // Your main program logic goes here
 }
 ```
+</div>
+</section>
+
+Notice that unlike with the `main` function there is no return value from `setup` or `loop`.
+This is because Arduinos are used for embedded applications, we do not expect the code to ever stop.
 
 Think of it this way:
 
@@ -86,6 +118,7 @@ Think of it this way:
 <div id="simple-demo">
   <wokwi-led color="red" pin="11"></wokwi-led>
 </div>
+
 ```cpp
 #include <Arduino.h>             // all the functions, e.g. delay()
 
@@ -181,15 +214,102 @@ Upload the Blinking LED example to the Arduino board from your module kit and co
 </div>
 
 
-# Serial communications
+# Printing to ~the console~ serial
 
-In order to get better insights into what our code is doing we need to add some log messages.
+With general purpose C/C++ programs the easiest way to get output from them is to print to the console.
+That is an issue for embedded devices as may not have any form of screen to display a console.
 
-The Arduino can send text to your PC over the USB cable using the `Serial` object. 
-It can also receive text sent from your PC.
+For Arduino and embedded programming in general, input and output is generally handled (if at all) via serial communication.
+We will look into serial communications in greater detail later in the module, but there are a few things to consider.
 
-How serial works
-================
+- Serial communications operate on 2 pins, the receive (RX) and the transmit (TX). You will need to ensure that you have a serial monitor connected to these pins in order to send/receive any messages.
+  - On the Arduino Uno R4 the default is connected to pins 0 (RX) and 1 (TX).
+  - But also routed to the USB connection and onward any connected PC.
+- Serial messages can be send at different speeds, better known as baud rates.
+  - Common bauds include 9600 and 115200, but can be much lower or higher.
+  - Higher numbers are faster, lower numbers are more reliable.
+
+<section class="flex-container">
+<div class="flex-child" style="min-width: 450px">
+```cpp
+#include <Arduino.h>
+
+void setup()
+{
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  Serial.println( "Hello World!" );
+  delay( 3000 );
+}
+```
+@AVR8js.sketch()
+</div>
+<div class="flex-child">
+- `Serial` is the default connection.
+  - If we use `Serial1` instead, we only send to the pins and not the USB.
+- We have to specify our baud rate before we can communicate using `Serial.begin(baud)`.
+  - For general debugging and development 9600 is generally fine but adjust as needed.
+</div>
+</section>
+
+--------------------------------------
+
+`Serial` is the standard way to read and write from serial communications on Arduino, but there are other options.
+But this is where is starts to get to get messy. the options for outputting to serial depend heavily on the capabilities of your microcontroller.
+
+
+AVR microcontrollers
+============
+<section class="flex-container">
+<div class="flex-child" style="min-width: 450px">
+```cpp
+Serial.println( "println" );
+printf( "printf\n" );
+```
+</div>
+<div class="flex-child">
+- Your simpler microcontrollers will only support the `Serial` and stdio methods.
+- `Serial` is the arduino standard.
+- `printf` etc are more capable.
+  - Can also be used to write to files for example.
+</div>
+</section>
+
+Renesas microcontrollers
+===========
+<section class="flex-container">
+<div class="flex-child" style="min-width: 450px">
+
+```cpp
+Serial.println( "println" );
+printf( "printf\n" );
+std::cout << "cout" << std::endl;
+```
+</div>
+<div class="flex-child">
+- Your more capable microcontrollers will support all the options.
+- `std::cout` provides type-safe, chainable output with `<<`, and more cleanly handles different data types.
+  - But with a large overhead. Simple "Hello World!" programs are ~37KB with the other techniques but 177KB with `std::cout`.
+</div>
+</section>
+
+--------------------------------------
+
+To support multiple microcontroller architectures or where space matters, consider using `Serial.println` or `printf`.
+If you want to write code that feels more familiar to desktop C++ development, `std::cout` may be a better choice, since it is commonly used for console output in desktop applications.
+
+<div class="important">
+@boxheader(Simulation)
+
+The statements made regarding `printf` and `std::cout` are true for your actual Arduino board.
+However, the simulation that we use in these LiaScript materials only supports `Serial`, therefore any active Arduino code examples will use this approach.
+</div>
+
+
+## How serial works
 
 Serial communication sends data one bit at a time over a pair of wires, one for each direction:
 
@@ -319,6 +439,37 @@ Serial.print(value, HEX);         // Print as hexadecimal
 Serial.print(value, BIN);         // Print as binary
 Serial.println(3.14, 2);          // Print float with 2 decimal places
 ```
+
+## Standard structure
+
+So our standard Arduino program will look something like this.
+
+- `#include` libraries for any additional functionality we need.
+  - `#include <Arduino.h>` for the basic Arduino features like `delay()`.
+- A `void setup()` function to set everything up.
+  - Setting `Serial` baud rates etc.
+- A `void loop()` function that keeps running and does the actual task on an ongoing basis.
+
+```cpp
+#include <Arduino.h>
+#include <stdio.h>
+
+void setup()
+{
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  static int counter = 0;
+
+  Serial.print( "Loop number " );
+  Serial.println( ++counter );
+
+  delay( 3000 );
+}
+```
+@AVR8js.sketch(simple-demo)
 
 
 ## Receiving text
