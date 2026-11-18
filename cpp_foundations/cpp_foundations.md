@@ -792,24 +792,12 @@ comparisons. C++ does not interpret `minimum < value < maximum` as a
 mathematical range check; write each comparison separately:
 
 ```cpp
-if (minimum < value && value < maximum) {
-    std::cout << "Value is inside the range\n";
+if( minimum < value && value < maximum ) 
+{
+  std::cout << "Value is inside the range\n";
 }
 ```
 
-Logical operators use **short-circuit evaluation**. With `&&`, the second
-condition is checked only if the first is true. This is useful for safely
-checking an array index before accessing the array:
-
-```cpp
-int index = getIndex();
-if (index >= 0 && index < 12 && values[index] > 3) {
-    std::cout << "The selected value is greater than 3\n";
-}
-```
-
-If `index` is outside the valid range, evaluation stops before
-`values[index]` is accessed.
 
 ## Choosing an action with `if` and `else`
 
@@ -829,14 +817,22 @@ The first matching branch runs; an optional final `else` handles all remaining
 cases:
 
 ```cpp
-if (temperature < 0) {
-    std::cout << "Below freezing\n";
-} else if (temperature == 0) {
-    std::cout << "At freezing\n";
-} else {
-    std::cout << "Above freezing\n";
+int temperature = 20;
+
+if( temperature < 0) 
+{
+  std::cout << "Below freezing" << std::endl;
+} 
+else if( temperature == 0 ) 
+{
+  std::cout << "At freezing" << std::endl;
+} 
+else 
+{
+  std::cout << "Above freezing" << std::endl;
 }
 ```
+@addcppmain()
 
 Use `else if` when the cases are alternatives and only one should be selected.
 Separate `if` statements are appropriate when multiple actions may each need
@@ -848,51 +844,70 @@ When choosing among several fixed values of the same expression, a `switch`
 statement can sometimes make the alternatives easier to read. Use `if` and
 `else` for general conditions such as ranges or combinations of comparisons.
 
+<div class="pass-task">
+@boxheader(In the browser)
+
+Change the value of `temperature` to run each conditional block.
+
+<script input="Submit" default="Answer">
+"LIASCRIPT: You need to set `temperature` to something about 0, something below 0 and exactly 0."
+</script>
+</div>
 
 
-# Strings
+<div class="learn-more">
+@boxheader(Learn more)
 
-Instead, strings are typically represented as arrays of characters, terminated by a null character (`'\0'`).
+There are additional conditional structures in C++. Read the [documentation](https://en.cppreference.com/cpp/language/switch) to investigate `switch` statements.
 
-For example, to declare a string in C, you might use:
-
-```c
-char myString[] = "Hello, World!";
-```
-
-In C++, or more precisely in the C++ standard library, there is a `std::string` type that provides a more convenient and powerful way to work with strings. 
-In embedded programming, especially on resource-constrained devices, it is common to use C-style strings (character arrays) for efficiency reasons, but the Arduino environment does provide a `String` class that offers many of the conveniences of `std::string` while being optimized for embedded use.
+In particular look into fallthrough behaviour and the ``[[fallthrough]]` attribute.
+</div>
 
 
+### Short circuits
 
-## C-style strings
+Logical operators use **short-circuit evaluation**, this is a powerful tool when writing logic statements.
+In short, C/C++ checks no more of the statement than necessary.
 
-Normally I would strongly advise against using C-style strings in C++ code unless there were specific and measurable performance requirements.
-In general, the `std::string` class provided by the C++ standard library is much safer and easier to use than C-style strings, as it manages memory automatically and provides a wide range of useful member functions for string manipulation.
+With `&&`, the second condition is checked only if the first is true. 
+In order for an and statement to be true, both sides must be true. If the left hand side is false then whole statement will be false no matter what, so what's the point of actually checking the right hand side?
 
-However, in embedded programming, especially on resource-constrained devices, it is common to use C-style strings (character arrays) for efficiency reasons, as they can be more memory-efficient.
+This is useful for safely checking an array index before accessing the array:
 
-C-style strings are represented as arrays of characters, terminated by a null character (`'\0'`).
-
-- The null character is ASCII character with the value of 0.
-- For reference, the ASCII value of 'A' is 65, and the ASCII value of 'a' is 97.
-
-This means that in order to store a 5 letter word, you need to allocate an array of 6 characters to accommodate the null terminator.
-
-```cpp c_string.cpp
-#include <iostream>
-#include <cstring> // for strlen function
-
-int main() 
+```cpp
+int index = getIndex();
+if( index >= 0 && index < 12 && values[index] > 3 ) 
 {
-    char myString[] = "Hello";  // null terminator is automatically added
-
-    std::cout << "myString: " << myString << std::endl;
-    std::cout << "Length: " << strlen(myString) << std::endl; // Use strlen to get the length of the string
-    std::cout << "Byte size: " << sizeof(myString) << " bytes" << std::endl; // Use sizeof to get the size of the array in bytes
-    
-    return 0;
+  std::cout << "The selected value is greater than 3\n";
 }
 ```
-@LIA.eval(`["c_string.cpp"]`, `g++ --std=c++17 c_string.cpp`, `./a.out`)
-@headlesscode("c_string.cpp")
+
+If `index` is outside the valid range, evaluation stops before
+`values[index]` is accessed.
+
+----------------------------
+
+Similarly for `||` statements.
+Once the left hand side is true, the overall statement will be true and there is no point checking the right hand side.
+
+<div class="learn-more">
+@boxheader(Learn more)
+
+Operator short circuiting has additional benefits beyond just @@@@@@.
+Placing fast checks earlier in the statement and slow checks later can provide substantial performance boosts depending on the exact program.
+
+Even is the fast check is not a good indication of whether the overall statement is true, by triggering early it avoid the slow checking running at all.
+
+For example a profanity filter
+
+```cpp
+if( word.length() > 2 && is_banned( word ) )
+{
+  std::cout << "Bad word!" << std::endl;
+}
+```
+
+Why bother check the users input against a long list of words (slow) if the input is too short to contain a bad word? 
+</div>
+
+
