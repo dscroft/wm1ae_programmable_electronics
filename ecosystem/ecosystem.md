@@ -254,19 +254,15 @@ Follow these steps to check it is installed and working.
     - Search for "C C++ Toolkit: Create New C++ Project".
 3. Follow the instructions to complete installation, select a base folder and name your project.
 4. Once the project has been created, build it.
-    - Open the Command Palette (ctrl+shift+p).
-    - Search for "CMake: Build".
-    - *Or*, click on the "Build" button in the bottom left corner of VSCode.
+    - Click on the green "Build" button in the bottom left corner of VSCode.
 
 
-If you made it through all these steps and everything was successful, a "[build] Build finished with exit code 0" message in the Output window
-
-![](media/cmake.png "Successful installation and build with CMake")
+If you made it through all these steps and everything was successful, when you click the build button a second time you should get a message "no work to do" in the Terminal window.
 
 
 ## Troubleshooting and Workarounds
 
-Nothing on this page.
+@sectiontoc(2)
 
 ### Portable version
 
@@ -275,7 +271,7 @@ If you are relying on the University machines then it is possible to run Visual 
 This approach allows you to carry your installation on a USB stick, with extensions you are looking at about 2GB minimum.
 
 VScode is available via the software center on WMG machines, but installing extensions and configuring your preferences on a new machine each time is painfully time consuming.
-As these instructions as probably only relevant to users of the University machines, the instructions ignore all other systems.
+As these instructions as probably only relevant to users of the University machines, the instructions are Windows specific.
 
 1. Visit the Visual Studio Code website and download the version for your platform.
     - Windows x64 version.
@@ -299,10 +295,19 @@ set "SCOOP=%~dp0data\scoop"
 "%~dp0Code.exe"
 ```
 
-### Virtual machine path
+<div class="warning">
+@boxheader(Warning)
+
+Some university machines will not allow you to run executables if they are on USB drives.
+
+The solution for this is to copy the files off the USB drive to your Documents folder or similar and to run them from there.
+</div>
+
+
+### Virtual machine option
 
 Some machines at the University will not allow you to run self compiled code for security reasons.
-If you are limited to these machine , you'll need to take the Virtual Machine option.
+If you are limited to these machine, you'll need to take the Virtual Machine option.
 
 VScode supports "Remote Development", i.e. you can have a copy of VScode running on your local machine that is connected to a different machine where your work lives.
 
