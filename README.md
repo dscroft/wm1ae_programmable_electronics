@@ -18,6 +18,8 @@
 
 [cpp_foundations](https://liascript.github.io/course/?https://dscroft.github.io/wm1ae_programmable_electronics/cpp_foundations/cpp_foundations.md)
 
+[cpp_functions](https://liascript.github.io/course/?https://dscroft.github.io/wm1ae_programmable_electronics/cpp_functions/cpp_functions.md)
+
 [cpp_iteration](https://liascript.github.io/course/?https://dscroft.github.io/wm1ae_programmable_electronics/cpp_iteration/cpp_iteration.md)
 
 [cpp_strings](https://liascript.github.io/course/?https://dscroft.github.io/wm1ae_programmable_electronics/cpp_strings/cpp_strings.md)
@@ -25,8 +27,6 @@
 [ecosystem](https://liascript.github.io/course/?https://dscroft.github.io/wm1ae_programmable_electronics/ecosystem/ecosystem.md)
 
 [electronics](https://liascript.github.io/course/?https://dscroft.github.io/wm1ae_programmable_electronics/electronics/electronics.md)
-
-[functions](https://liascript.github.io/course/?https://dscroft.github.io/wm1ae_programmable_electronics/functions/functions.md)
 
 [git_cli_vs_gui](https://liascript.github.io/course/?https://dscroft.github.io/wm1ae_programmable_electronics/git_cli_vs_gui/git_cli_vs_gui.md)
 
