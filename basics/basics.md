@@ -48,16 +48,17 @@ Previous versions:
 
 @end
 
-import: https://raw.githubusercontent.com/liaTemplates/AVR8js/main/README.md
-
 import: ../assets/macros.md
+import: https://raw.githubusercontent.com/liaTemplates/AVR8js/main/README.md
+import: https://raw.githubusercontent.com/dscroft/CodeRunner/master/README.md
+
 -->
 
-# Basics of Arduino and Embedded Programming
+# Basics of writing/running programs
 
 @overview
 
-# Arduino C++ vs C/C++
+# Arduino vs C/C++
 
 Arduino code uses C and C++, but it is compiled for a specific microcontroller and its limited hardware resources, rather than for a desktop computer with an operating system and abundant memory and processing power. Although much of the language is the same, the available libraries, hardware interfaces, and practical programming choices depend on the board.
 
@@ -66,7 +67,7 @@ These differences are especially noticeable on classic AVR boards such as the Un
 More capable boards widen those possibilities. The Uno R4 uses a 32-bit, 48 MHz microcontroller with 32 KB of SRAM and 256 KB of flash, making more complex C++ code and libraries practical and bringing the programming experience closer to general-purpose C/C++. It is still embedded code, however: memory and processing remain limited compared with a desktop, and hardware, timing, and board-specific APIs still shape what the program can do.
 
 
-# Minimal program
+## Minimal programs
 
 Your standard C or C++ program has to have a `main` function. 
 On Arduino the structure of a minimal program changes and it instead requires a `setup` and a `loop` function.
@@ -109,11 +110,89 @@ This is because Arduinos are used for embedded applications, we do not expect th
 
 Think of it this way:
 
-- **setup()**: Constructor - prepare the system
-- **loop()**: Main thread - keep running forever
+- **setup()**: Constructor - prepare the system.
+- **loop()**: Main thread - keep running forever.
+
+--------------------
+
+Unlike embedded applications, we often expect a general purpose C/C++ program to stop, normally once it has completed it's task.
+As such, when `main` finishes, it returns an exit status to the operating system to indicate success or failure.
+
+Returning `0` conventionally means the program completed successfully; a non-zero value can be used to indicate that something went wrong. 
+The operating system or a script that launched the program can check this status, for example to decide whether to continue with the next step.
 
 
-## A Simple Example: Blinking LED
+# Simple General Example
+
+```cpp
+#include <iostream>             // input/output functions, e.g. std::cout
+
+int main() 
+{
+  std::cout << "Hello World!" << std::endl;
+  
+  return 0;
+}
+```
+@LIA.cpp()
+
+This is your first general purpose program! Let's break it down:
+
+- `#include <iostream>`: Include (make available) the standard C++ input/output features, e.g. `std::cout`.
+- `std::cout`: Output to the console (**c**onsole **out**put).
+- `"Hello World!"`: The text we want to output. Hello World! is traditional.
+- `std::endl;`: End this line of text and start a new one.
+- `return 0;` End the program and indicate that everything was fine.
+
+<div class="pass-task">
+@boxheader(In the browser)
+
+Run the example code and see what it outputs.
+</div>
+
+## Real program
+
+Running in the browser like this is fine for us to demonstrate concepts, but we need to be able to create and run real executables going forwards.
+
+Creating your first project
+=========================
+
+1. Open VSCode.
+2. Open the command palette.
+  - Ctrl+Shift+P.
+3. Create a new C++ project.
+    - "> C C++ Toolkit: Create New C++ Project"
+4. Pick a folder where you want your project directory to be generated.
+5. Give your project a *meaningful* name.
+5. In the Explorer window on the left, find and open the 'main.cpp' file.
+    - You will also have a 'CMakeLists.txt' file that we will be covering later in the module.
+6. Replace the contents of main.cpp with your code.
+    - I.e. the Hello World! example.
+7. Build your code.
+    - Using the Green Build button on the bottom bar.
+8. Assuming it built successfully, run your code.
+    - Using the Green Run button on the bottom bar.
+
+If everything has worked, you should see "Hello World!" printed to the terminal.
+
+----------------------------------
+
+<div class="pass-task">
+@boxheader(On your machine)
+
+If you have not already done so, follow the [ecosystem](../ecosystem/ecosystem.md) instructions.
+
+Build and run the Hello World example code.
+</div>
+
+<div class="adv-task">
+@boxheader(On your machine)
+
+Navigate to and run the executable directly from the terminal, outside of Visual Studio.
+</div>
+
+
+# Simple Arduino Example
 
 <div id="simple-demo">
   <wokwi-led color="red" pin="11"></wokwi-led>
@@ -141,6 +220,7 @@ void loop()
 
 This is your first embedded program! Let's break it down:
 
+- `#include <Arduino.h>`: Include (make available) all the standard functions such as `pinMode`, `delay` etc.
 - `const uint8_t LED_PIN = 13`: Define the pin number as a constant
 - `pinMode(LED_PIN, OUTPUT)`: Tell Arduino that pin 13 is an output
 - `digitalWrite(LED_PIN, HIGH)`: Send 5V to the pin (LED on)
@@ -194,7 +274,7 @@ Creating your first project
     - Or Ctrl+Shift+P, ">PlatformIO: Upload"
     - Make sure it uploads successfully.
 
-If everything has worked, you should be one of the LEDS on your Arduino board blinking.
+If everything has worked, you should see one of the LEDS on your Arduino board blinking.
 
 ![PlatformIO Home](https://docs.platformio.org/en/stable/_images/platformio-ide-vscode-welcome.png "PlatformIO Home")
 ![Project Creation Wizard](media/project_wizard.png "Project Creation Wizard")
@@ -214,7 +294,8 @@ Upload the Blinking LED example to the Arduino board from your module kit and co
 </div>
 
 
-# Printing to ~the console~ serial
+
+## Printing to ~the console~ serial
 
 With general purpose C/C++ programs the easiest way to get output from them is to print to the console.
 That is an issue for embedded devices as may not have any form of screen to display a console.
@@ -309,7 +390,7 @@ However, the simulation that we use in these LiaScript materials only supports `
 </div>
 
 
-## How serial works
+### How serial works
 
 Serial communication sends data one bit at a time over a pair of wires, one for each direction:
 
@@ -342,7 +423,7 @@ On the Uno R4, the USB connection is the `Serial` object and pins 0 and 1 are a 
 </div>
 
 
-## Starting serial
+### Starting serial
 
 Call `Serial.begin()` once in `setup()` to start the connection. 
 The number is the **baud rate**, the speed of the connection in bits per second. 
@@ -362,7 +443,7 @@ void setup()
 </div>
 
 
-## Sending text
+### Sending text
 
 Once we have configured our baud rate we can start sending messages.
 
@@ -429,7 +510,7 @@ Upload the uptime example to your Arduino board and monitor the serial messages 
 Adjust the code so that the uptime is output in seconds rather than milliseconds.
 </div>
 
-### Formatting
+#### Formatting
 
 `print()` and `println()` can also format numbers in various ways or output in different bases:
 
@@ -440,7 +521,7 @@ Serial.print(value, BIN);         // Print as binary
 Serial.println(3.14, 2);          // Print float with 2 decimal places
 ```
 
-## Standard structure
+### Standard structure
 
 So our standard Arduino program will look something like this.
 
@@ -547,27 +628,24 @@ With a friend, connect your two Arduinos together on pins 0 and 1 and try sendin
 
 `.available()` does not return the number of letters that are waiting, it returns the number of *bytes*.
 Equally `.read()` does not return a letter, it returns the next byte of data.
-Assuming that you are using English and what's known as ASCII encoding, 1 letter is 1 byte in size so it does work interchangably for out purposes for the moment.
+Assuming that you are using English and what's known as ASCII encoding, 1 letter is 1 byte in size so it does work interchangably for our purposes for the moment.
 </div>
 
 
 
-# Summary
+# Recap
 
-Best Practices for Embedded Programming
-========================================
+@recap
 
-1. **Use meaningful pin names**: `constexpr uint8_t LED_PIN { 13 };` instead of magic numbers.
+---------------------------------
+
+- **Use meaningful pin names**: `constexpr uint8_t LED_PIN { 13 };` instead of magic numbers.
     - A magic number is a number in your code that is not explained.
     - I.e. `digitalWrite( 13, HIGH )` is a magic number. What is pin 13?
     - `digitalWrite( LED_PIN, HIGH )` is much clearer.
-2. **Use Serial debugging** early and often
-
-Recap
-=====
-
-- **Arduino sketches** have setup() and loop() functions
-- **digitalWrite/digitalRead**: Control and read logic levels (HIGH/LOW)
 - **Serial**: Essential for debugging
-
+    - **Use Serial debugging** early and often
+- **Arduino sketches** have `setup()` and `loop()` functions
+  - General C/C++ programs have `main()`.
+- **digitalWrite/digitalRead**: Control and read logic levels (HIGH/LOW)
 
