@@ -9,9 +9,9 @@ narrator: UK English Female
 
 mode: Textbook
 
-title: Control Flow - Conditionals and Loops
-comment:  This module covers conditional statements (if/else, switch) and looping constructs (for, while, do-while).
-long_description: This module explores how to control the execution flow of C/C++ programs using conditional statements and loops. These constructs allow programs to make decisions and repeat actions, which are fundamental to any useful program.
+title: Control Flow - Conditionals 
+comment:  This module covers conditional statements (if/else, switch)
+long_description: This module explores how to control the execution flow of C/C++ programs using conditional statements. These constructs allow programs to make decisions and repeat actions, which are fundamental to any useful program.
 estimated_time_in_minutes: 50
 
 @learning_objectives  
@@ -139,15 +139,45 @@ With integer variables for example, 0 converts to `false` and all other values c
 Other variable types work differently and exactly how every different type converts to a boolean is not going to be covered for now.
 If you are unsure how a specific variable type converts, use an explicit comparison instead, for clarity and certainty.
 
-```cpp Integer to boolean example
-int counter = 10;
-
+```cpp Integer as boolean example
 for( int i=-5; i<=5; ++i )
 {
-  std::cout << i << " is " << std::boolalpha << static_cast<bool>(i) << std::endl;
+  std::cout << i << " is " << 
+
+  // i is an int but will be converted to a boolean
+  if( i )
+  {
+    std::cout << "True" << std::endl;
+  }
+  else
+  {
+    std::cout << "False" << std::endl;
+  }
 }
 ```
 @addcppmain()
+
+<div class="learn-more">
+@boxheader(Learn more)
+
+There are multiple occasional when programming when you will need to convert from one variable type to another.
+C++ sometimes converts a value from one type to another automatically as seen here with booleans and conditionals.
+
+But we can also make a conversion explicit by **casting** a variable. 
+Conversions can lose information; for example, converting a floating-point value to an integer discards its fractional part.
+
+Older C++ code often uses a C-style cast, written as `(type)value`:
+
+```cpp
+double measurement = 4.8;
+int cStyleResult = (int)measurement;
+int cppStyleResult = static_cast<int>(measurement);
+```
+
+Both casts convert `4.8` to `4`, truncating the fractional part rather than rounding. 
+C-style casts are still supported, but in C++ we prefer `static_cast<type>(value)`.
+It is preferred because it provides additional compiler checks to the casting.
+</div>
 
 
 ## Comparison operators
@@ -208,7 +238,18 @@ std::cout << std::boolalpha << ready << std::endl;
 `ready` is true when both `door_closed` and `power_on` are true, or when the
 temperature is below the limit.
 Brackets `()` are used to control evaluation order, as with mathematical notation.
-Otherwise they are evaluated in `!`, `&&`, `||` order from left to right.
+Without parentheses, these operators bind in the order `!`, then `&&`, then
+`||`. This is precedence, not a promise that every operand will be evaluated.
+
+<div class="warning">
+@boxheader(Warning)
+
+Do not confuse logical `&&`, `||`, and `!` with bitwise `&`, `|`, and `~`.
+Logical operators work with conditions and can short-circuit; bitwise
+operators work on the individual bits of integer values and always evaluate
+their operands. Use the operator that matches your intention.
+
+</div>
 
 ### Range checks
 
@@ -237,45 +278,6 @@ Fix the comparison that `inRange` has the correct value.
 "LIASCRIPT: `const bool inRange = 0 < value && value < 10;`"
 </script>
 </div>
-
-
-### Short circuiting
-
-Logical `&&` and `||` use short-circuit evaluation.
-What that means is that C++ skips the right operand when the left operand already determines the overall result. 
-
-This is useful for safeguard checks:
-
-```cpp
-#include <array>
-#include <cstddef>
-
-const std::array<int, 12> values{};
-const int i{4};
-if (i >= 0 && i < static_cast<int>(values.size()) &&
-    values[static_cast<std::size_t>(i)] > 3) {
-    // The array access is reached only when i is in range.
-}
-```
-
-The index checks must come before the access because `&&` evaluates from left
-to right. Similarly, in `first_check() || second_check()`, the second function
-is not called if the first check is true.
-
-Short-circuiting can also avoid unnecessary work when a later check is
-expensive. Put a quick check first when it can rule out the case before the
-more costly check:
-
-```cpp
-if( word.size() > 2 && is_banned(word) ) 
-{
-    std::cout << "Bad word!" << std::endl;
-}
-```
-
-Here, `is_banned` is only called when the word is long enough to need checking.
-Keep the checks in an order that preserves the intended logic; in particular,
-put any guard before an expression that depends on it.
 
 
 # `if` and `else`
@@ -330,61 +332,338 @@ Adjust the values of A and B to explore all possible code paths.
 
 
 
+## Short circuiting
 
-### `switch` statements
+Logical `&&` and `||` use short-circuit evaluation.
+What that means is that C++ evaluates the left operand first and skips the
+right operand when the left operand already determines the overall result.
 
-Use `switch` to select a branch based on one integral or enumeration value.
-Each `case` label is a compile-time constant. In a traditional `switch`,
-execution continues into the next case unless it is stopped with `break`,
-`return`, or another control-flow statement. Accidental fall-through is a common
-bug; group intentional cases or mark deliberate fall-through with
-`[[fallthrough]];`.
 
 ```cpp
 #include <iostream>
+#include <string>
 
-enum class Grade { A, B, C, D, F };
-
-void print_grade(Grade grade)
+bool check( std::string s )
 {
-    switch (grade) {
-    case Grade::A:
-        std::cout << "A\n";
-        break;
-    case Grade::B:
-        std::cout << "B\n";
-        break;
-    case Grade::C:
-        std::cout << "C\n";
-        break;
-    case Grade::D:
-        std::cout << "D\n";
-        break;
-    case Grade::F:
-        std::cout << "F\n";
-        break;
-    }
+    std::cout << "Checking " << s << std::endl;
+    return false;
+}
+
+int main()
+{
+  bool andResult = check("left of and") && check("right of and");
+  
+  bool orResult = check("left of or") || check("right of or");
+
+  return 0;
 }
 ```
+@LIA.cpp()
 
-`enum class` keeps enumerator names scoped and avoids implicit conversion to
-integers. When handling an enumeration, consider omitting `default` so compiler
-warnings can help identify newly added values that need a case. Several labels
-can share the same action:
+<div class="good-task">
+@boxheader(Question)
+
+**What happens if you change the return value of the `check()` function of `true`?**
+
+[[ ]] Both expressions call both checks, so all four messages print.
+[[X]] Both `&&` checks run, but `||` skips its right check.
+[[ ]] The `&&` skips its right check and `||` runs both checks.
+***
+If `check()` always returns `true`. 
+Then once the left hand side of the `&&` has returned `true`, the overall result depends on whether the right hand side is going to be `true` or `false`.
+So we evaluate the right hand side to find out the answer.
+
+With the `||`, once the left hand side has returned `true`, the overall result is going to be `true` no matter what happens on the right hand side. 
+Since the right hand result is irrelevant, we don't bother evaluating it.
+***
+</div>
+
+
+------------------------------
+
+Short circuiting is extremely useful if you have checks that should only be run if other criteria are met, such as with array access.
 
 ```cpp
-switch (command) {
-case Command::Start:
-case Command::Resume:
-    start_system();
-    break;
-case Command::Stop:
-    stop_system();
-    break;
+if( wifi.connected() && website.up() )
+{
+  download();
 }
 ```
 
-Use `switch` for straightforward integral or enum selection; for other kinds
-of matching, an `if` chain or a suitable standard-library facility may be a
-better fit.
 
+Short-circuiting can also avoid unnecessary work when a later check is expensive. 
+Put a quick check first and it can help avoid more computationally expensive checks before they run.
+Here, `is_banned` is only called when the word is long enough to need checking.
+
+```cpp
+if( word.length() > 2 && is_banned(word) ) 
+{
+  std::cout << "Bad word!" << std::endl;
+}
+```
+
+
+## Chained `if` statements
+
+Separate `if` statements each test their own condition. 
+More than one condition can be true, so more than one block can run. 
+
+```cpp Separate if example
+const int temperature = 32;
+
+if( temperature > 30 ) 
+{
+  std::cout << "Fan on high" << std::endl;
+}
+
+if( temperature > 25 ) 
+{
+  std::cout << "Fan on low" << std::endl;
+}
+```
+@addcppmain()
+
+With a temperature of `32`, both messages are printed. 
+
+-----------------------------
+
+If we only want multiple conditions but only want 1 block to run, then we need to chain our if statements.
+This is an expansion on the the `if-else` statements we have already seen.
+
+```cpp Chained if example
+const int temperature = 32;
+
+if( temperature > 30 )
+{
+  std::cout << "Fan on high" << std::endl;
+}
+else if( temperature > 25 ) 
+{
+  std::cout << "Fan on low" << std::endl;
+}
+```
+@addcppmain()
+
+Use `else if` when the cases are alternatives and only one action should be selected.
+Use separate `if` statements when the actions are independent and should run regardless of the other blocks.
+
+
+## Nested `if` statements
+
+An `if` statement can be placed inside another `if` statement. 
+The inner condition is checked only when execution enters the outer block. 
+Nesting is useful when one decision depends on another:
+
+```cpp Nested if example
+const bool power_on = true;
+const bool door_closed = true;
+
+if( power_on ) 
+{
+  if( door_closed ) 
+  {
+    std::cout << "Motor can start" << std::endl;
+  } 
+  else 
+  {
+    std::cout << "Close the door first" << std::endl;
+  }
+} 
+else 
+{
+  std::cout << "Turn on the power first" << std::endl;
+}
+```
+@addcppmain()
+
+
+Here, the door condition matters only when the power is on. Braces make it
+clear which `else` belongs to which `if`. Avoid deep nesting where possible;
+guard clauses or combining conditions can sometimes make the logic easier to
+follow.
+
+### The dangling `else`
+
+When braces are omitted from nested `if` statements, an `else` belongs to the
+nearest preceding `if` that does not already have an `else`. 
+Indentation does not change this rule as, unlike other languages, indentation in C++ is purely aesthetic, it has no impact on the code.
+
+```cpp
+bool powerOn = true;
+bool doorClosed = false;
+
+if( powerOn )
+  if( doorClosed )
+    std::cout << "Motor can start" << std::endl;
+  else
+    std::cout << "Close the door first" << std::endl;
+```
+@addcppmain()
+
+The `else` belongs to `if( doorClosed )`, not to `if( powerOn )`. 
+This is sometimes called the **dangling `else`** problem. 
+Use braces when nesting conditions so the intended pairing is explicit:
+
+Omitting braces is valid for a single controlled statement, but braces are
+usually clearer when an `if` is nested or may be extended later.
+
+<div class="good-task">
+@boxheader(In the browser)
+
+Add braces to the example code so that the `else` block belongs to the `powerOn` check.
+
+<script id="button" input="submit" default="Answer">
+document.getElementById("answer").style.display = "block";
+document.activeElement.style.display = "none";
+</script>
+
+<div id="answer" style="display: none">
+```cpp
+if( powerOn ) 
+{
+  if( doorClosed ) 
+  {
+    std::cout << "Motor can start" << std::endl;
+  }
+} 
+else 
+{
+  std::cout << "Turn on the power first" << std::endl;
+}
+```
+</div>
+</div>
+
+
+
+# `switch` statements
+
+The use of chained and nested if statements allows you to handle multiple conditions but if you have a large number of possible outcomes the syntax can become unwieldly.
+
+```cpp Unwieldly example
+const int httpStatusCode = 404;
+
+if( httpStatusCode == 200 )
+{
+  std::cout << "OK" << std::endl;
+}
+else if (httpStatusCode == 301)
+{
+  std::cout << "Moved Permanently" << std::endl;
+}
+else if (httpStatusCode == 400)
+{
+  std::cout << "Bad Request" << std::endl;
+}
+else if (httpStatusCode == 403)
+{
+  std::cout << "Forbidden" << std::endl;
+}
+else if (httpStatusCode == 404)
+{
+    std::cout << "Not Found" << std::endl;
+}
+else if (httpStatusCode == 500)
+{
+    std::cout << "Internal Server Error" << std::endl;
+}
+else
+{
+    std::cout << "Unknown Status" << std::endl;
+}
+```
+@addcppmain()
+
+As you can see in the example we have to compare `statusCode` for each block,
+It would be easy to make a mistake and, for example, put `=` instead of `==` on one line.
+Because every conditional is separate, we would only detect the issue when that specific value was checked.
+
+-----------------------------------------
+
+`switch` statements are an alternative option that can reduce code repetition.
+
+Each `case` label needs to be a compile-time constant. 
+In a traditional `switch`, execution continues into the next case unless it is stopped with `break` or `return`.
+
+```cpp switch example
+const int httpStatusCode = 404;
+
+switch( httpStatusCode )
+{
+  case 200:
+    std::cout << "OK" << std::endl;
+    break;
+
+  case 301:
+    std::cout << "Moved Permanently" << std::endl;
+    break;
+
+  case 400:
+    std::cout << "Bad Request" << std::endl;
+
+  case 403:
+    std::cout << "Forbidden" << std::endl;
+    break;
+
+  case 404:
+    std::cout << "Not Found" << std::endl;
+    break;
+
+  case 500:
+    std::cout << "Internal Server Error" << std::endl;
+    break;
+
+  default:
+    std::cout << "Unknown Status" << std::endl;
+    break;
+}
+```
+@addcppmain()
+
+<div class="good-task">
+@boxheader(Question)
+
+If you change `httpStatusCode` to `400`, what is printed and why?
+
+[( )] Only `Bad Request`, because each `case` ends automatically.
+[(X)] `Bad Request` followed by `Forbidden`, because there is no `break`.
+[( )] `Unknown Status`, because `400` is not a recognized case.
+***
+There is no `break` after `case 400`, so execution continues into `case 403`.
+It stops at the `break` after `Forbidden`.
+Continuing from one case into the following one is called "fallthrough".
+***
+</div>
+
+<div class="warning">
+@boxheader(Warning)
+
+Accidentally falling through from one case into the next one is a common bug.
+
+But fallthrough is also a very useful ability when intended. 
+Mark deliberate fall-through with the `[[fallthrough]];` attribute.
+
+```cpp
+const int value = 1;
+
+switch( value )
+{
+  case 1: [[fallthrough]];
+    std::cout << "Case 1 and I want to also run case 2" << std::endl;
+
+  case 2:
+    std::cout << "Case 2" << std::endl;
+    break;
+
+  default:
+    std::cout << "Default" << std::endl;
+    break;
+}
+```
+@addcppmain()
+</div>
+
+
+# Recap
+
+@recap
