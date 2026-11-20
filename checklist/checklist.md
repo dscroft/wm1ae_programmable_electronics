@@ -1,5 +1,5 @@
 <!--
-module_id: basics
+module_id: checklist
 author:   David Croft
 email:    david.croft@warwick.ac.uk
 version: 0.0.1
@@ -15,9 +15,7 @@ link:  ../assets/styles.css
 import: ../assets/macros.md
 
 @hoveritem
-<span class="image-hover" data-image="@1"> 
-[[X]] @0
-</span>
+[[X]] <span class="image-hover" data-image="@1"> @0 </span>
 @end
 -->
 
@@ -48,19 +46,22 @@ Make sure that you have all items on the checklist.
 
 <div style="display: flex; gap: 20px;">
 <div style="width: 400px">
-@hoveritem(`Numbered Project Box`, checklist/media/box.jpg)
+@hoveritem(`Numbered Project Box`, https://dscroft.github.io/wm1ae_programmable_electronics/checklist/media/box.jpg)
 @hoveritem(`*With ↑ Breadboard*`, https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Electronics-White-Breadboard.jpg/960px-Electronics-White-Breadboard.jpg)
+@hoveritem(`Flathead screwdriver`, https://dscroft.github.io/wm1ae_programmable_electronics/checklist/media/screwdriver.webp)
 @hoveritem(`Arduino Uno R4 Wifi`, https://store.arduino.cc/cdn/shop/files/ABX00087_00.front_494x371.jpg)
 @hoveritem(`Arduino R3 Motor Shield`, https://store.arduino.cc/cdn/shop/files/A000079_01.iso_494x392.jpg)
 @hoveritem(`SR04 Ultrasonic sensor`, https://mm.digikey.com/Volume0/opasdata/d220001/medias/images/6032/MFG_SEN-24049.jpg)
-@hoveritem(`TJA1051T/3 CAN Bus Transceiver`, checklist/media/can.jpg )
-@hoveritem(`Servo motor`, checklist/media/servo.webp)
-@hoveritem(`*With ↑ servo arm*`, checklist/media/arm.png)
+@hoveritem(`~TJA1051T/3 CAN Bus Transceiver~ (still waiting on delivery)`, https://dscroft.github.io/wm1ae_programmable_electronics/checklist/media/can.jpg )
+@hoveritem(`Servo motor`, https://dscroft.github.io/wm1ae_programmable_electronics/checklist/media/servo.webp)
+@hoveritem(`*With ↑ servo arm*`, https://dscroft.github.io/wm1ae_programmable_electronics/checklist/media/arm.png)
 @hoveritem(`Blue DG01D-­E motor with encoder`, https://mm.digikey.com/Volume0/opasdata/d220001/medias/images/496/MFG_ROB-16413.jpg)
-@hoveritem(`*With ↑ Encoder cable*`, checklist/media/encoder_cable.jpg)
+@hoveritem(`*With ↑ Encoder cable*`, https://dscroft.github.io/wm1ae_programmable_electronics/checklist/media/encoder_cable.jpg)
+@hoveritem(`Multiple SPST switches`, https://dscroft.github.io/wm1ae_programmable_electronics/checklist/media/button.webp)
 @hoveritem(`Multiple LEDs`, https://upload.wikimedia.org/wikipedia/commons/9/90/Electronic-Component-Red-LED.jpg)
-@hoveritem(`Multiple Male-to-male jumper wires`, checklist/media/m2m.jpg)
-@hoveritem(`Multiple Make-to-female jumper wires`, checklist/media/m2f.jpg)
+@hoveritem(`Multiple Male-to-male jumper wires`, https://dscroft.github.io/wm1ae_programmable_electronics/checklist/media/m2m.jpg)
+@hoveritem(`Multiple Make-to-female jumper wires`, https://dscroft.github.io/wm1ae_programmable_electronics/checklist/media/m2f.jpg)
+@hoveritem(`Multiple resistors`, https://dscroft.github.io/wm1ae_programmable_electronics/checklist/media/Y1743093-01.webp)
 @hoveritem(`USB A to USB C, male-to-male cable`, https://mm.digikey.com/Volume0/opasdata/d220001/medias/images/4566/MFG_DH-20Mseries.jpg)
 </div>
 <div id="image-container" style="width: 400px; position: relative">
