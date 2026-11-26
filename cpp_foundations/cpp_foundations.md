@@ -55,6 +55,10 @@ import: https://raw.githubusercontent.com/liaTemplates/AVR8js/main/README.md
 import: ../assets/macros.md
 -->
 
+# C++ foundations
+
+@overview
+
 # Minimum viable program
 
 Your standard C or C++ program has certain minimal requirements, namely a `main` function.
@@ -86,7 +90,7 @@ C and stdlib
 ============
 <section class="flex-container">
 <div class="flex-child" style="min-width: 450px">
-```c
+```c printf Example
 #include <stdio.h>
 
 int main()
@@ -112,7 +116,7 @@ C++ and std
 <section class="flex-container">
 <div class="flex-child" style="min-width: 450px">
 
-```cpp
+```cpp cout Example
 #include <iostream>
 
 int main()
@@ -203,7 +207,7 @@ When printed, they are typically displayed as number as a number.
 `false` converts to `0` and `true` to `1`.
 Use `std::boolalpha` with `std::cout` to display the words instead.
 
-```cpp
+```cpp conditionals example
 int temperature = 22;
 temperature > 20;  // true
 

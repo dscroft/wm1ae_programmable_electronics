@@ -152,7 +152,7 @@ int total = 0;
 
 for( int index=0; index<5; ++index ) 
 {
-  total += readings[i];
+  total += readings[index];
 }
 std::cout << "Total: " << total << std::endl;
 ```
@@ -801,6 +801,7 @@ Besides that the functionality is identical, which is the point.
 </script>
 </div>
 
+## Tasks
 
 <div class="pass-task">
 @boxheader(On the hardware)
@@ -870,7 +871,6 @@ void loop()
 ```
 </div>
 </div>
-
 
 # Recap 
 
