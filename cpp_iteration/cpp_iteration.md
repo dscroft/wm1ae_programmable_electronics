@@ -21,7 +21,7 @@ estimated_time_in_minutes: 40
 - Choose a loop form for counting, condition-driven, or at-least-once repetition.
 - Use `break` and `continue` to control loop execution.
 - Identify and avoid infinite loops and off-by-one errors.
-- Apply loops to solve practical problems like summing values and processing collections.
+- Apply loops to solve practical problems like summing values.
 
 @end
 
@@ -624,7 +624,7 @@ Write a program that outputs every even number from 1-100.
 </script>
 
 <script input="submit" default="Hint">
-"LIASCRIPT: You don't have to increament your loop variables by 1. You can increment by any amount."
+"LIASCRIPT: You don't have to increment your loop variables by 1. You can increment by any amount."
 </script>
 
 <script id="button" input="submit" default="Answer">

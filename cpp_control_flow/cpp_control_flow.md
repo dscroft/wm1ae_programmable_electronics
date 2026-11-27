@@ -55,7 +55,6 @@ import: https://raw.githubusercontent.com/dscroft/CodeRunner/master/README.md
 import: ../assets/macros.md
 -->
 
-
 # Blocks
 
 A block is a group of statements enclosed in braces, `{` and `}`. A block can
@@ -123,6 +122,8 @@ As it makes absolutely no difference to the compiled code, this module does not 
 
 
 # Conditionals
+
+@overview
 
 Programs rarely run the same instructions in the same order for every input.
 Conditionals select which statements to execute, and loops repeat statements
@@ -514,7 +515,7 @@ Add braces to the example code so that the `else` block belongs to the `powerOn`
 
 <script id="button" input="submit" default="Answer">
 document.getElementById("answer").style.display = "block";
-document.activeElement.style.display = "none";
+"Answer""
 </script>
 
 <div id="answer" style="display: none">
