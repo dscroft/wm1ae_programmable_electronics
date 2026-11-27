@@ -638,6 +638,18 @@ If you run into this issue, put your bit shift code inside brackets.
 I.e. `std::cout << ( 1 << 8 ) << std::endl;`
 </div>
 
+<div class="pass-task">
+@boxheader(Question)
+
+**For an unsigned int `value = 3`, what is `value << 2`?**
+
+[[ ]] `6`
+[[X]] `12`
+[[ ]] `32`
+***
+`0b11` shifted left twice becomes `0b1100`, or 12. 
+***
+</div>
 
 
 ## Signed/Unsigned
